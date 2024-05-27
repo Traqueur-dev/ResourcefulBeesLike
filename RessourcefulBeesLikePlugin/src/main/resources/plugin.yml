@@ -1,0 +1,5 @@
+name: RessourcefulBeesLikePlugin
+version: '${version}'
+main: fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin
+api-version: '1.20'
+load: STARTUP

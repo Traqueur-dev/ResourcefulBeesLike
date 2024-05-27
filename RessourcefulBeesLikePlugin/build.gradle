@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+dependencies {
+    compileOnly project(':RessourcefulBeesLikeAPI')
+}
+
+jar {
+    from(project(':RessourcefulBeesLikeAPI').sourceSets.main.output)
+}
+
+java {
+    withSourcesJar()
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+processResources {
+    filesMatching('plugin.yml') {
+        expand(project.properties)
+    }
+}
+
+shadowJar {
+    from(project(':RessourcefulBeesLikeAPI').sourceSets.main.output)
+}
+
+assemble.dependsOn shadowJar
