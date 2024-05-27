@@ -1,5 +1,7 @@
 package fr.traqueur.ressourcefulbees.api.managers;
 
-public interface IManager {
+public interface IBeesManager {
+
+    void test();
 
 }
