@@ -29,9 +29,9 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
     public void onEnable() {
 
         this.registerManager(new BeesManager(this), IBeesManager.class);
-        this.getServer().getServicesManager().register(IBeesManager.class, this.getManager(BeesManager.class), this, ServicePriority.Normal);
+        this.getServer().getServicesManager().register(IBeesManager.class, this.getManager(IBeesManager.class), this, ServicePriority.Normal);
 
-        this.getManager(BeesManager.class).test();
+        this.getManager(IBeesManager.class).test();
 
         this.saveables.forEach(saveable -> {
             this.saveOrUpdateConfiguration(saveable.getFile(), saveable.getFile());
