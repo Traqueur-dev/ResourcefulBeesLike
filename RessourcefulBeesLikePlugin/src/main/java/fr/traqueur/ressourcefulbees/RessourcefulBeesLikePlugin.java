@@ -40,7 +40,7 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
             }
         });
 
-        BeeLogger.info("RessourcefulBees Plugin enabled successfully");
+        BeeLogger.info("RessourcefulBees Plugin enabled successfully !");
     }
 
     @Override

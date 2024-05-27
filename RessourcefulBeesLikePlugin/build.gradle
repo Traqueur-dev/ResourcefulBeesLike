@@ -31,4 +31,10 @@ shadowJar {
     from(project(':RessourcefulBeesLikeAPI').sourceSets.main.output)
 }
 
+tasks.register('copyJar', Copy) {
+    from shadowJar // here it automatically reads jar file produced from jar task
+    into 'C:/Users/hp/Documents/Developpement/servers/RessourcefulBees/plugins'
+}
+
 assemble.dependsOn shadowJar
+build.finalizedBy copyJar
