@@ -1,7 +1,7 @@
-package fr.traqueur.ressourcefulbees.commands.arguments.impl;
+package fr.traqueur.ressourcefulbees.commands.api.arguments.impl;
 
-import fr.traqueur.ressourcefulbees.commands.arguments.ArgumentConverter;
-import fr.traqueur.ressourcefulbees.commands.arguments.TabConverter;
+import fr.traqueur.ressourcefulbees.commands.api.arguments.ArgumentConverter;
+import fr.traqueur.ressourcefulbees.commands.api.arguments.TabConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 

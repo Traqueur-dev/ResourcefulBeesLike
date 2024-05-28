@@ -4,6 +4,7 @@ import fr.traqueur.ressourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +42,9 @@ public class BeeListener implements Listener {
         if(beeSpawnEvent.isCancelled()) {
             return;
         }
-        item.subtract();
+        if(player.getGameMode() != GameMode.CREATIVE) {
+            item.subtract();
+        }
         String name = item.getItemMeta().getPersistentDataContainer().getOrDefault(Keys.BEE_NAME, PersistentDataType.STRING, "Bee");
         this.manager.spawnBee(block.getLocation(), name);
     }

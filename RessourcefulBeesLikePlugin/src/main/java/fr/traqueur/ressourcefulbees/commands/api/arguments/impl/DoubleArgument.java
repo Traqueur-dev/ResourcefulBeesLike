@@ -1,7 +1,7 @@
-package fr.traqueur.ressourcefulbees.commands.arguments.impl;
+package fr.traqueur.ressourcefulbees.commands.api.arguments.impl;
 
 
-import fr.traqueur.ressourcefulbees.commands.arguments.ArgumentConverter;
+import fr.traqueur.ressourcefulbees.commands.api.arguments.ArgumentConverter;
 
 /**
  * Cette classe implémente l'interface ArgumentConverter pour convertir une chaîne de caractères en un objet Double.

@@ -1,4 +1,4 @@
-package fr.traqueur.ressourcefulbees.commands.arguments;
+package fr.traqueur.ressourcefulbees.commands.api.arguments;
 
 /**
  * Cette classe représente une clé d'argument qui associe un nom et un type.

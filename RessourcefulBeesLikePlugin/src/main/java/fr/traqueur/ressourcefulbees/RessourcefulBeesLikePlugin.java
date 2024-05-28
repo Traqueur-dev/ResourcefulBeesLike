@@ -2,10 +2,15 @@ package fr.traqueur.ressourcefulbees;
 
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLike;
 import fr.traqueur.ressourcefulbees.api.Saveable;
+import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
+import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.ressourcefulbees.commands.api.CommandManager;
+import fr.traqueur.ressourcefulbees.commands.arguments.BeeTypeArgument;
+import fr.traqueur.ressourcefulbees.managers.BeeTypeManager;
 import fr.traqueur.ressourcefulbees.managers.BeesManager;
+import org.bukkit.entity.Bee;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
@@ -28,6 +33,9 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
     @Override
     public void onEnable() {
 
+        this.registerManager(new BeeTypeManager(this), IBeeTypeManager.class);
+        this.commandManager.registerConverter(BeeType.class, "beetype", new BeeTypeArgument(this.getManager(IBeeTypeManager.class)));
+
         this.registerManager(new BeesManager(this), IBeesManager.class);
 
         this.saveables.forEach(saveable -> {
@@ -36,11 +44,6 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
         });
 
         BeeLogger.info("RessourcefulBees Plugin enabled successfully !");
-    }
-
-    public <I, T extends I> void registerAndPublishManager(T instance, Class<I> clazz) {
-        this.registerManager(instance, clazz);
-        this.getServer().getServicesManager().register(clazz, instance, this, ServicePriority.Normal);
     }
 
     @Override

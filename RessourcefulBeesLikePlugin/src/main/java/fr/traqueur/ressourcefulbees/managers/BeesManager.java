@@ -3,6 +3,7 @@ package fr.traqueur.ressourcefulbees.managers;
 import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
+import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeCommand;
 import fr.traqueur.ressourcefulbees.commands.api.CommandManager;
@@ -36,15 +37,15 @@ public class BeesManager implements IBeesManager {
         return item != null && item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(Keys.BEE);
     }
 
-    public ItemStack generateBeeSpawnEgg(String name) {
+    public ItemStack generateBeeSpawnEgg(BeeType type) {
         //generate bee egg with data key with value name
         ItemStack item = new ItemStack(Material.BEE_SPAWN_EGG);
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(Keys.BEE, PersistentDataType.BOOLEAN, true);
-        container.set(Keys.BEE_NAME, PersistentDataType.STRING, name);
+        container.set(Keys.BEE_NAME, PersistentDataType.STRING, type.getName());
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.displayName(Component.text(name + " Bee Spawn Egg"));
+        meta.displayName(Component.text(type.getName() + " Bee Spawn Egg"));
         item.setItemMeta(meta);
         return item;
     }

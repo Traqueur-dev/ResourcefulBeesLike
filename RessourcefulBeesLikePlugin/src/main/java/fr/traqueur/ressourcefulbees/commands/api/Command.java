@@ -1,9 +1,9 @@
 package fr.traqueur.ressourcefulbees.commands.api;
 
-import fr.traqueur.ressourcefulbees.commands.arguments.Argument;
-import fr.traqueur.ressourcefulbees.commands.arguments.Arguments;
-import fr.traqueur.ressourcefulbees.commands.arguments.TabConverter;
-import fr.traqueur.ressourcefulbees.commands.exceptions.NoOptionalArgsWithInfiniteArgumentException;
+import fr.traqueur.ressourcefulbees.commands.api.arguments.Argument;
+import fr.traqueur.ressourcefulbees.commands.api.arguments.Arguments;
+import fr.traqueur.ressourcefulbees.commands.api.arguments.TabConverter;
+import fr.traqueur.ressourcefulbees.commands.api.exceptions.NoOptionalArgsWithInfiniteArgumentException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 

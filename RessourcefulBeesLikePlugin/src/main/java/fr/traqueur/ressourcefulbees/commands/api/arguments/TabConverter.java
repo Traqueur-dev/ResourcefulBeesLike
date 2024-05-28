@@ -1,4 +1,4 @@
-package fr.traqueur.ressourcefulbees.commands.arguments;
+package fr.traqueur.ressourcefulbees.commands.api.arguments;
 
 import java.util.List;
 

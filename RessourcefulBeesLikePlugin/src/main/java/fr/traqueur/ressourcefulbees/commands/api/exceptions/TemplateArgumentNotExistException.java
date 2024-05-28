@@ -1,4 +1,4 @@
-package fr.traqueur.ressourcefulbees.commands.exceptions;
+package fr.traqueur.ressourcefulbees.commands.api.exceptions;
 
 /**
  * Cette exception est levée lorsqu'un argument requis n'est pas trouvé dans les arguments fournis.

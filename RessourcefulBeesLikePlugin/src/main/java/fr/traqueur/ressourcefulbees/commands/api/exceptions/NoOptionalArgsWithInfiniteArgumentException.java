@@ -1,4 +1,4 @@
-package fr.traqueur.ressourcefulbees.commands.exceptions;
+package fr.traqueur.ressourcefulbees.commands.api.exceptions;
 
 /**
  * Cette exception est levée lorsqu'un argument facultatif est ajouté à une commande avec un argument infini.
