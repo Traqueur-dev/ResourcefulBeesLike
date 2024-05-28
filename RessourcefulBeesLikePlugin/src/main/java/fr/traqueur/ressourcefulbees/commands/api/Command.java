@@ -1,4 +1,4 @@
-package fr.traqueur.ressourcefulbees.commands;
+package fr.traqueur.ressourcefulbees.commands.api;
 
 import fr.traqueur.ressourcefulbees.commands.arguments.Argument;
 import fr.traqueur.ressourcefulbees.commands.arguments.Arguments;

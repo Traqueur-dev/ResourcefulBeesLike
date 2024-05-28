@@ -4,10 +4,10 @@ import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLike;
 import fr.traqueur.ressourcefulbees.api.Saveable;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.ressourcefulbees.commands.CommandManager;
+import fr.traqueur.ressourcefulbees.commands.api.CommandManager;
+import fr.traqueur.ressourcefulbees.managers.BeesManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
-
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -29,8 +29,6 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
     public void onEnable() {
 
         this.registerManager(new BeesManager(this), IBeesManager.class);
-
-        this.getManager(IBeesManager.class).test();
 
         this.saveables.forEach(saveable -> {
             this.saveOrUpdateConfiguration(saveable.getFile(), saveable.getFile());

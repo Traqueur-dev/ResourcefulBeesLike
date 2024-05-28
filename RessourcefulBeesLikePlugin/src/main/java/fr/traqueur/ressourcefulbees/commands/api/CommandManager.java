@@ -1,4 +1,4 @@
-package fr.traqueur.ressourcefulbees.commands;
+package fr.traqueur.ressourcefulbees.commands.api;
 
 import com.google.common.collect.Lists;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
@@ -411,7 +411,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
         }
 
-        return null;
+        return List.of();
     }
 
     /**

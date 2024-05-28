@@ -1,7 +1,16 @@
 package fr.traqueur.ressourcefulbees.api.managers;
 
+import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
+
 public interface IBeesManager {
 
-    void test();
+    ItemStack generateBeeSpawnEgg(String name);
 
+    boolean isBeeSpawnEgg(ItemStack item);
+
+    void spawnBee(Location location, String name);
+
+    RessourcefulBeesLikeAPI getPlugin();
 }
