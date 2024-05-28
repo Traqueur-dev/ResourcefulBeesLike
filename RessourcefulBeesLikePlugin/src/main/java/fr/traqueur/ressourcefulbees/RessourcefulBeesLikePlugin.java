@@ -29,7 +29,6 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
     public void onEnable() {
 
         this.registerManager(new BeesManager(this), IBeesManager.class);
-        this.getServer().getServicesManager().register(IBeesManager.class, this.getManager(IBeesManager.class), this, ServicePriority.Normal);
 
         this.getManager(IBeesManager.class).test();
 
@@ -39,6 +38,11 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
         });
 
         BeeLogger.info("RessourcefulBees Plugin enabled successfully !");
+    }
+
+    public <I, T extends I> void registerAndPublishManager(T instance, Class<I> clazz) {
+        this.registerManager(instance, clazz);
+        this.getServer().getServicesManager().register(clazz, instance, this, ServicePriority.Normal);
     }
 
     @Override
@@ -60,7 +64,7 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
     }
 
     @Override
-    public <T> void registerManager(T instance, Class<T> clazz) {
+    public <I, T extends I> void registerManager(T instance, Class<I> clazz) {
         if(instance instanceof Saveable saveable) {
             this.saveables.add(saveable);
         }

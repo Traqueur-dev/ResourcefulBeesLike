@@ -4,5 +4,5 @@ public interface RessourcefulBeesLikeAPI {
 
     <T> T getManager(Class<T> clazz);
 
-    <T> void registerManager(T instance, Class<T> clazz);
+    <I, T extends I> void registerManager(T instance, Class<I> clazz);
 }
