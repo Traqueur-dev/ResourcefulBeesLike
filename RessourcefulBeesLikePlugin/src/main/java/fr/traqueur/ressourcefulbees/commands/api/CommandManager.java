@@ -75,14 +75,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             aliases.add(command.getName());
             for (String alias : aliases) {
                 this.registerCommand(command, alias);
-                this.registerSubCommands(command, alias, command.getSubcommands());
+                this.registerSubCommands(alias, command.getSubcommands());
             }
         } catch(TemplateArgumentNotExistException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void registerSubCommands(Command parent, String parentLabel, List<Command> subcommands) throws TemplateArgumentNotExistException {
+    public void registerSubCommands(String parentLabel, List<Command> subcommands) throws TemplateArgumentNotExistException {
         if(subcommands == null || subcommands.isEmpty()) {
             return;
         }
@@ -91,7 +91,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             aliasesSub.add(subcommand.getName());
             for (String aliasSub : aliasesSub) {
                 this.registerCommand(subcommand, parentLabel + "." + aliasSub);
-                this.registerSubCommands(subcommand, parentLabel + "." + aliasSub, subcommand.getSubcommands());
+                this.registerSubCommands(parentLabel + "." + aliasSub, subcommand.getSubcommands());
             }
         }
     }
@@ -128,7 +128,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 cmd.setExecutor(this);
                 cmd.setTabCompleter(this);
 
-                if(!commandMap.register(command.getName(), cmd)) {
+                if(!commandMap.register(cmdLabel, cmd)) {
                     BeeLogger.severe("Unable to add the command " + cmdLabel);
                     return;
                 }
