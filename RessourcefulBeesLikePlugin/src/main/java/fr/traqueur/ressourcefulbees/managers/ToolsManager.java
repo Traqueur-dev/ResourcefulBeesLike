@@ -2,12 +2,13 @@ package fr.traqueur.ressourcefulbees.managers;
 
 import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.Saveable;
+import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
-import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
 import fr.traqueur.ressourcefulbees.api.managers.IToolsManager;
-import fr.traqueur.ressourcefulbees.api.models.BeePersistentDataType;
+import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBee;
 import fr.traqueur.ressourcefulbees.api.utils.Constants;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeToolsGiveCommand;
@@ -15,7 +16,6 @@ import fr.traqueur.ressourcefulbees.listeners.ToolsListener;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Bee;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -72,22 +72,22 @@ public class ToolsManager implements IToolsManager, Saveable {
         if (!container.has(Keys.BEE_BOX_BEES)) {
             return false;
         }
-        List<BeeType> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
+        List<IBee> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
         return bees.size() >= beeBoxMaxBees;
     }
 
     public void addToBeeBox(ItemStack beeBox, Bee bee) {
         ItemMeta meta = beeBox.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        List<BeeType> bees = container.getOrDefault(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), new ArrayList<>());
+        List<IBee> bees = container.getOrDefault(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), new ArrayList<>());
         bees = new ArrayList<>(bees);
         PersistentDataContainer beeContainer = bee.getPersistentDataContainer();
         BeeType beeType = this.beeTypeManager.getBeeType("normal");
         if(beeContainer.has(Keys.BEE)) {
-            beeType = beeContainer.get(Keys.BEE_NAME, BeePersistentDataType.INSTANCE);
+            beeType = beeContainer.get(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE);
         }
 
-        bees.add(beeType);
+        bees.add(new fr.traqueur.ressourcefulbees.models.Bee(beeType, !bee.isAdult()));
         container.set(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), bees);
         bee.remove();
         beeBox.setItemMeta(meta);
@@ -104,15 +104,15 @@ public class ToolsManager implements IToolsManager, Saveable {
         if (!container.has(Keys.BEE_BOX_BEES)) {
             return;
         }
-        List<BeeType> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
-        LinkedList<BeeType> mutableBees = new LinkedList<>(bees);
+        List<IBee> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
+        LinkedList<IBee> mutableBees = new LinkedList<>(bees);
         if(bees.isEmpty()) {
             return;
         }
         int nbBees = all ? bees.size() : 1;
         for(int i = 0; i < nbBees; i++) {
-            BeeType beeType = mutableBees.poll();
-            BeeSpawnEvent event = new BeeSpawnEvent(beeType, location, false);
+            IBee bee = mutableBees.poll();
+            BeeSpawnEvent event = new BeeSpawnEvent(bee.getBeeType(), location, bee.isBaby());
             this.plugin.getServer().getPluginManager().callEvent(event);
         }
         container.set(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), mutableBees);
@@ -130,7 +130,7 @@ public class ToolsManager implements IToolsManager, Saveable {
         if (!container.has(Keys.BEE_BOX_BEES)) {
             return;
         }
-        List<BeeType> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
+        List<IBee> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
         int size = bees.size();
         meta.displayName(Component.text("Bee Box (" + size + " bees)"));
         beeBox.setItemMeta(meta);

@@ -2,9 +2,10 @@ package fr.traqueur.ressourcefulbees.managers;
 
 import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
+import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
-import fr.traqueur.ressourcefulbees.api.models.BeePersistentDataType;
+import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeCommand;
@@ -15,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Bee;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -45,7 +45,7 @@ public class BeesManager implements IBeesManager {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(Keys.BEE, PersistentDataType.BOOLEAN, true);
-        container.set(Keys.BEE_NAME, BeePersistentDataType.INSTANCE, type);
+        container.set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
         meta.displayName(Component.text(type.getName() + " Bee Spawn Egg"));
         item.setItemMeta(meta);
         return item;
@@ -55,7 +55,7 @@ public class BeesManager implements IBeesManager {
     public void spawnBee(Location location, BeeType type, boolean baby) {
         Bee bee = location.getWorld().spawn(location.add(0.5, 1, 0.5), Bee.class, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         bee.getPersistentDataContainer().set(Keys.BEE, PersistentDataType.BOOLEAN, true);
-        bee.getPersistentDataContainer().set(Keys.BEE_NAME, BeePersistentDataType.INSTANCE, type);
+        bee.getPersistentDataContainer().set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
         if(!type.getName().equals("normal")) {
             bee.customName(Component.text(type.getName() + " Bee"));
         }

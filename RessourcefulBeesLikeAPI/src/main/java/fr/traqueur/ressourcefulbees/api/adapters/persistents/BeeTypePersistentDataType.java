@@ -1,17 +1,17 @@
-package fr.traqueur.ressourcefulbees.api.models;
+package fr.traqueur.ressourcefulbees.api.adapters.persistents;
 
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLike;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
+import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class BeePersistentDataType implements PersistentDataType<String, BeeType> {
+public class BeeTypePersistentDataType implements PersistentDataType<String, BeeType> {
 
-    public static final BeePersistentDataType INSTANCE = new BeePersistentDataType();
-
-    private final IBeeTypeManager manager = JavaPlugin.getPlugin(RessourcefulBeesLike.class).getManager(IBeeTypeManager.class);
+    public static final BeeTypePersistentDataType INSTANCE = new BeeTypePersistentDataType();
+    private static final IBeeTypeManager manager = JavaPlugin.getPlugin(RessourcefulBeesLike.class).getManager(IBeeTypeManager.class);
 
     @Override
     public @NotNull Class<String> getPrimitiveType() {
@@ -24,8 +24,8 @@ public class BeePersistentDataType implements PersistentDataType<String, BeeType
     }
 
     @Override
-    public @NotNull String toPrimitive(@NotNull BeeType beeType, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
-        return beeType.getName().toLowerCase();
+    public @NotNull String toPrimitive(@NotNull BeeType bee, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
+        return bee.getName().toLowerCase();
     }
 
     @Override
