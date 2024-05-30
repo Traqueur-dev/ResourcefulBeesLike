@@ -40,6 +40,7 @@ public class BeeTypeManager implements IBeeTypeManager {
 
     private enum BeeTypes implements BeeType {
 
+        NORMAL("normal"),
         DIRT("Dirt"),
         COBBLESTONE("Cobblestone"),
         SAND("Sand"),

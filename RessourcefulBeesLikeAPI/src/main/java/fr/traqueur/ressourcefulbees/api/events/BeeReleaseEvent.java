@@ -1,13 +1,13 @@
 package fr.traqueur.ressourcefulbees.api.events;
 
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BeeSpawnEvent extends Event implements Cancellable {
+public class BeeReleaseEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -21,26 +21,27 @@ public class BeeSpawnEvent extends Event implements Cancellable {
     }
 
     private boolean cancel = false;
-    private final BeeType type;
-    private final Location location;
-    private final boolean baby;
 
-    public BeeSpawnEvent(BeeType type, Location location, boolean baby) {
-        this.type = type;
+    private final ItemStack beebox;
+    private final Location location;
+    private final boolean all;
+
+    public BeeReleaseEvent(ItemStack beebox, Location location, boolean sneak) {
+        this.beebox = beebox;
         this.location = location;
-        this.baby = baby;
+        this.all = sneak;
     }
 
-    public BeeType getType() {
-        return type;
+    public ItemStack getBeebox() {
+        return beebox;
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public boolean isBaby() {
-        return baby;
+    public boolean isAll() {
+        return all;
     }
 
     @Override

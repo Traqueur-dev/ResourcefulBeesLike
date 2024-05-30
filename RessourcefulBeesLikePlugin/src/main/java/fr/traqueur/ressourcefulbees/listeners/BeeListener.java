@@ -1,7 +1,10 @@
 package fr.traqueur.ressourcefulbees.listeners;
 
 import fr.traqueur.ressourcefulbees.api.events.BeeSpawnEvent;
+import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
+import fr.traqueur.ressourcefulbees.api.models.BeePersistentDataType;
+import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -22,24 +25,18 @@ import org.bukkit.persistence.PersistentDataType;
 public class BeeListener implements Listener {
 
     private final IBeesManager manager;
+    private final IBeeTypeManager beeTypeManager;
+    private boolean isEntityInteraction;
 
-    public BeeListener(IBeesManager manager) {
+    public BeeListener(IBeesManager manager, IBeeTypeManager beeTypeManager) {
         this.manager = manager;
-    }
-
-    @EventHandler
-    public void onTryToSpawnBee(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        Action action = event.getAction();
-        Block block = event.getClickedBlock();
-        if(action != Action.RIGHT_CLICK_BLOCK || block == null) {
-            return;
-        }
-        this.parseInteraction(event, player, block.getLocation(), false);
+        this.beeTypeManager = beeTypeManager;
     }
 
     @EventHandler
     public void onTryToSpawnBeeOnEntity(PlayerInteractEntityEvent event) {
+        isEntityInteraction = true;
+
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
@@ -49,6 +46,21 @@ public class BeeListener implements Listener {
         this.parseInteraction(event, player, entity.getLocation(), true);
     }
 
+    @EventHandler
+    public void onTryToSpawnBee(PlayerInteractEvent event) {
+        if(isEntityInteraction) {
+            isEntityInteraction = false;
+            return;
+        }
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+        Block block = event.getClickedBlock();
+        if(action != Action.RIGHT_CLICK_BLOCK || block == null) {
+            return;
+        }
+        this.parseInteraction(event, player, block.getLocation(), false);
+    }
+
     private <T extends Cancellable> void parseInteraction(T event, Player player, Location location, boolean baby) {
         ItemStack item = player.getInventory().getItemInMainHand();
         if(!this.manager.isBeeSpawnEgg(item)) {
@@ -56,16 +68,17 @@ public class BeeListener implements Listener {
         }
 
         event.setCancelled(true);
-        BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent();
-        Bukkit.getPluginManager().callEvent(beeSpawnEvent);
-        if(beeSpawnEvent.isCancelled()) {
-            return;
-        }
         if(player.getGameMode() != GameMode.CREATIVE) {
             item.subtract();
         }
-        String name = item.getItemMeta().getPersistentDataContainer().getOrDefault(Keys.BEE_NAME, PersistentDataType.STRING, "Bee");
-        this.manager.spawnBee(location, name, baby);
+        BeeType type = item.getItemMeta().getPersistentDataContainer().getOrDefault(Keys.BEE_NAME, new BeePersistentDataType(), this.beeTypeManager.getBeeType("normal"));
+        BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type,location, baby);
+        Bukkit.getPluginManager().callEvent(beeSpawnEvent);
+    }
+
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    public void onSpawnBee(BeeSpawnEvent event) {
+        this.manager.spawnBee(event.getLocation(), event.getType(), event.isBaby());
     }
 
 }

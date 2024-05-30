@@ -4,13 +4,14 @@ import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLike;
 import fr.traqueur.ressourcefulbees.api.Saveable;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
+import fr.traqueur.ressourcefulbees.api.managers.IToolsManager;
 import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.ressourcefulbees.commands.api.CommandManager;
 import fr.traqueur.ressourcefulbees.commands.arguments.BeeTypeArgument;
 import fr.traqueur.ressourcefulbees.managers.BeeTypeManager;
 import fr.traqueur.ressourcefulbees.managers.BeesManager;
-import org.bukkit.entity.Bee;
+import fr.traqueur.ressourcefulbees.managers.ToolsManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
@@ -37,6 +38,7 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
         this.commandManager.registerConverter(BeeType.class, "beetype", new BeeTypeArgument(this.getManager(IBeeTypeManager.class)));
 
         this.registerManager(new BeesManager(this), IBeesManager.class);
+        this.registerManager(new ToolsManager(this), IToolsManager.class);
 
         this.saveables.forEach(saveable -> {
             this.saveOrUpdateConfiguration(saveable.getFile(), saveable.getFile());
