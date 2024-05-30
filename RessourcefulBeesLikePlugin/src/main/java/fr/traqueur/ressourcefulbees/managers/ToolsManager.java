@@ -9,6 +9,7 @@ import fr.traqueur.ressourcefulbees.api.managers.IToolsManager;
 import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.models.BeeType;
 import fr.traqueur.ressourcefulbees.api.models.IBee;
+import fr.traqueur.ressourcefulbees.api.utils.ConfigKeys;
 import fr.traqueur.ressourcefulbees.api.utils.Constants;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeToolsGiveCommand;
@@ -168,7 +169,7 @@ public class ToolsManager implements IToolsManager, Saveable {
     @Override
     public void loadData() {
         FileConfiguration config = this.getConfig(this.plugin);
-        this.beeBoxMaxBees = config.getInt("bee-box-max-bees");
+        this.beeBoxMaxBees = config.getInt(ConfigKeys.BEE_BOX_MAX_BEES);
     }
 
     @Override
