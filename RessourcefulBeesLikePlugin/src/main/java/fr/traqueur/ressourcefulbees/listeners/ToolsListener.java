@@ -32,6 +32,10 @@ public class ToolsListener implements Listener {
     public void onTryCatchBee(PlayerInteractEntityEvent event) {
         isEntityInteraction = true;
 
+        if(event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
         Player player = event.getPlayer();
         Entity bee = event.getRightClicked();
         ItemStack beebox = player.getInventory().getItemInMainHand();

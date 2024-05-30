@@ -38,6 +38,10 @@ public class BeeListener implements Listener {
     public void onTryToSpawnBeeOnEntity(PlayerInteractEntityEvent event) {
         isEntityInteraction = true;
 
+        if(event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
