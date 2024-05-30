@@ -71,7 +71,7 @@ public class BeeListener implements Listener {
         this.parseInteraction(event, player, block.getLocation(), false);
     }
 
-    private <T extends Cancellable> void parseInteraction(T event, Player player, Location location, boolean baby) {
+    private void parseInteraction(Cancellable event, Player player, Location location, boolean baby) {
         ItemStack item = player.getInventory().getItemInMainHand();
         if(!this.manager.isBeeSpawnEgg(item)) {
             return;
