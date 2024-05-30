@@ -51,12 +51,15 @@ public class BeesManager implements IBeesManager {
     }
 
 
-    public void spawnBee(Location location, String name) {
+    public void spawnBee(Location location, String name, boolean baby) {
         Bee bee = location.getWorld().spawn(location.add(0.5, 1, 0.5), Bee.class, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         bee.getPersistentDataContainer().set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         bee.getPersistentDataContainer().set(Keys.BEE_NAME, PersistentDataType.STRING, name);
         bee.customName(Component.text(name + " Bee"));
         bee.setCustomNameVisible(true);
+        if(baby) {
+            bee.setBaby();
+        }
     }
 
     @Override
