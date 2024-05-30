@@ -14,6 +14,7 @@ import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeToolsGiveCommand;
 import fr.traqueur.ressourcefulbees.listeners.ToolsListener;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Bee;
@@ -25,6 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ToolsManager implements IToolsManager, Saveable {
 
@@ -105,19 +107,24 @@ public class ToolsManager implements IToolsManager, Saveable {
             return;
         }
         List<IBee> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
-        LinkedList<IBee> mutableBees = new LinkedList<>(bees);
-        if(bees.isEmpty()) {
-            return;
+        if(bees != null) {
+            LinkedList<IBee> mutableBees = new LinkedList<>(bees);
+            if(mutableBees.isEmpty()) {
+                return;
+            }
+            int nbBees = all ? bees.size() : 1;
+            for(int i = 0; i < nbBees; i++) {
+                IBee bee = mutableBees.poll();
+                if(bee == null) {
+                    continue;
+                }
+                BeeSpawnEvent event = new BeeSpawnEvent(bee.getBeeType(), location, bee.isBaby());
+                this.plugin.getServer().getPluginManager().callEvent(event);
+            }
+            container.set(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), mutableBees);
+            beebox.setItemMeta(meta);
+            this.updateBeeBox(beebox);
         }
-        int nbBees = all ? bees.size() : 1;
-        for(int i = 0; i < nbBees; i++) {
-            IBee bee = mutableBees.poll();
-            BeeSpawnEvent event = new BeeSpawnEvent(bee.getBeeType(), location, bee.isBaby());
-            this.plugin.getServer().getPluginManager().callEvent(event);
-        }
-        container.set(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), mutableBees);
-        beebox.setItemMeta(meta);
-        this.updateBeeBox(beebox);
     }
 
     public void updateBeeBox(ItemStack beeBox) {
@@ -131,8 +138,20 @@ public class ToolsManager implements IToolsManager, Saveable {
             return;
         }
         List<IBee> bees = container.get(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
-        int size = bees.size();
-        meta.displayName(Component.text("Bee Box (" + size + " bees)"));
+
+        if(bees != null) {
+            int size = bees.size();
+
+            List<Component> lore = bees.stream()
+                    .collect(Collectors.groupingBy((e) -> e.getBeeType().getName(), Collectors.summingInt(e -> 1)))
+                    .entrySet().stream()
+                    .map(entry -> Component.text(entry.getKey() + " Bee x" + entry.getValue(), NamedTextColor.YELLOW))
+                    .collect(Collectors.toList());
+            lore.add(Component.empty());
+            lore.add(Component.text("Total: " + size + " bees", NamedTextColor.GRAY));
+            meta.lore(lore);
+        }
+
         beeBox.setItemMeta(meta);
     }
 
