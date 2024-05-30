@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class ToolsListener implements Listener {
@@ -47,6 +48,10 @@ public class ToolsListener implements Listener {
     public void onTryReleaseBee(PlayerInteractEvent event) {
         if(isEntityInteraction) {
             isEntityInteraction = false;
+            return;
+        }
+
+        if(event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 

@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -50,6 +51,9 @@ public class BeeListener implements Listener {
     public void onTryToSpawnBee(PlayerInteractEvent event) {
         if(isEntityInteraction) {
             isEntityInteraction = false;
+            return;
+        }
+        if(event.getHand() != EquipmentSlot.HAND) {
             return;
         }
         Player player = event.getPlayer();
