@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
     compileOnly project(':RessourcefulBeesLikeAPI')
+    implementation 'net.bytebuddy:byte-buddy:1.10.19'
+    implementation 'net.bytebuddy:byte-buddy-agent:1.10.19'
 }
 
 jar {
@@ -32,9 +34,12 @@ shadowJar {
 }
 
 tasks.register('copyJar', Copy) {
-    from shadowJar // here it automatically reads jar file produced from jar task
+    from reobfJar // here it automatically reads jar file produced from jar task
     into 'C:/Users/hp/Documents/Developpement/servers/RessourcefulBees/plugins'
 }
 
-assemble.dependsOn shadowJar
+tasks.assemble {
+    dependsOn(reobfJar)
+}
+
 build.finalizedBy copyJar

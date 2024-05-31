@@ -1,5 +1,6 @@
 package fr.traqueur.ressourcefulbees.managers;
 
+import fr.traqueur.ressourcefulbees.BeeWrapper;
 import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
 import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
@@ -10,6 +11,10 @@ import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeCommand;
 import fr.traqueur.ressourcefulbees.commands.api.CommandManager;
 import fr.traqueur.ressourcefulbees.listeners.BeeListener;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.matcher.ElementMatchers;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,12 +31,19 @@ public class BeesManager implements IBeesManager {
     private final RessourcefulBeesLikePlugin plugin;
 
     public BeesManager(RessourcefulBeesLikePlugin plugin) {
-       this.plugin = plugin;
-       CommandManager commandManager = plugin.getCommandManager();
-       PluginManager pluginManager = plugin.getServer().getPluginManager();
+        this.plugin = plugin;
+        CommandManager commandManager = plugin.getCommandManager();
+        PluginManager pluginManager = plugin.getServer().getPluginManager();
 
-       pluginManager.registerEvents(new BeeListener(this, plugin.getManager(IBeeTypeManager.class)), plugin);
-       commandManager.registerCommand(new BeeCommand(plugin, this));
+        pluginManager.registerEvents(new BeeListener(this, plugin.getManager(IBeeTypeManager.class)), plugin);
+        commandManager.registerCommand(new BeeCommand(plugin, this));
+
+        new ByteBuddy()
+                .redefine(net.minecraft.world.entity.animal.Bee.class)
+                .method(ElementMatchers.named("e"))
+                .intercept(MethodDelegation.to(BeeWrapper.class))
+                .make()
+                .load(net.minecraft.world.entity.animal.Bee.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
     }
 
     public boolean isBeeSpawnEgg(ItemStack item) {
@@ -55,6 +67,7 @@ public class BeesManager implements IBeesManager {
         Bee bee = location.getWorld().spawn(location.add(0.5, 1, 0.5), Bee.class, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         bee.getPersistentDataContainer().set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         bee.getPersistentDataContainer().set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
+
         if(!type.getType().equals("normal_bee")) {
             bee.customName(Component.text(type.getName()));
             bee.setCustomNameVisible(true);

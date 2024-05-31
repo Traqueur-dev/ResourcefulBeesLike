@@ -9,6 +9,7 @@ import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.ressourcefulbees.api.utils.ConfigKeys;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
+import fr.traqueur.ressourcefulbees.models.BeeTypes;
 import fr.traqueur.ressourcefulbees.models.Breed;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Bee;
@@ -104,33 +105,6 @@ public class BeeTypeManager implements IBeeTypeManager, Saveable {
             config.save(new File(this.plugin.getDataFolder(), this.getFile()));
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private enum BeeTypes implements IBeeType {
-
-        NORMAL_BEE("Bee"),
-        DIRT_BEE("Dirt Bee"),
-        COBBLESTONE_BEE("Cobblestone Bee"),
-        SAND_BEE("Sand Bee"),
-        GRAVEL_BEE("Gravel Bee"),
-        WOOD_BEE("Wood Bee"),
-        ;
-
-        private final String name;
-
-        BeeTypes(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getType() {
-            return this.name().toLowerCase();
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
         }
     }
 }

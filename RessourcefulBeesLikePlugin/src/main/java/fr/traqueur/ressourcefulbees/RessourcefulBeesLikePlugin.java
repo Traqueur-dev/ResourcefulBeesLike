@@ -14,6 +14,7 @@ import fr.traqueur.ressourcefulbees.managers.BeeTypeManager;
 import fr.traqueur.ressourcefulbees.managers.BeesManager;
 import fr.traqueur.ressourcefulbees.managers.BreedsManager;
 import fr.traqueur.ressourcefulbees.managers.ToolsManager;
+import net.bytebuddy.agent.ByteBuddyAgent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
@@ -35,6 +36,8 @@ public final class RessourcefulBeesLikePlugin extends RessourcefulBeesLike {
 
     @Override
     public void onEnable() {
+
+        ByteBuddyAgent.install();
 
         this.registerManager(new BeeTypeManager(this), IBeeTypeManager.class);
         this.commandManager.registerConverter(IBeeType.class, "beetype", new BeeTypeArgument(this.getManager(IBeeTypeManager.class)));
