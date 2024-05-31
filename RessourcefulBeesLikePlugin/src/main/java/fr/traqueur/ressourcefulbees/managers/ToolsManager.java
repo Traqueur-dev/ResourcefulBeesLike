@@ -7,7 +7,7 @@ import fr.traqueur.ressourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.managers.IToolsManager;
 import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeePersistentDataType;
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.models.IBee;
 import fr.traqueur.ressourcefulbees.api.utils.ConfigKeys;
 import fr.traqueur.ressourcefulbees.api.utils.Constants;
@@ -85,12 +85,12 @@ public class ToolsManager implements IToolsManager, Saveable {
         List<IBee> bees = container.getOrDefault(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), new ArrayList<>());
         bees = new ArrayList<>(bees);
         PersistentDataContainer beeContainer = bee.getPersistentDataContainer();
-        BeeType beeType = this.beeTypeManager.getBeeType("normal");
+        IBeeType IBeeType = this.beeTypeManager.getBeeType("normal");
         if(beeContainer.has(Keys.BEE)) {
-            beeType = beeContainer.get(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE);
+            IBeeType = beeContainer.get(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE);
         }
 
-        bees.add(new fr.traqueur.ressourcefulbees.models.Bee(beeType, !bee.isAdult()));
+        bees.add(new fr.traqueur.ressourcefulbees.models.Bee(IBeeType, !bee.isAdult()));
         container.set(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), bees);
         bee.remove();
         beeBox.setItemMeta(meta);

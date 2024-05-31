@@ -1,6 +1,6 @@
 package fr.traqueur.ressourcefulbees.api.events;
 
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -21,17 +21,17 @@ public class BeeSpawnEvent extends Event implements Cancellable {
     }
 
     private boolean cancel = false;
-    private final BeeType type;
+    private final IBeeType type;
     private final Location location;
     private final boolean baby;
 
-    public BeeSpawnEvent(BeeType type, Location location, boolean baby) {
+    public BeeSpawnEvent(IBeeType type, Location location, boolean baby) {
         this.type = type;
         this.location = location;
         this.baby = baby;
     }
 
-    public BeeType getType() {
+    public IBeeType getType() {
         return type;
     }
 

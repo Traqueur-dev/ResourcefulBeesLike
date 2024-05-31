@@ -1,7 +1,7 @@
 package fr.traqueur.ressourcefulbees.commands;
 
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.utils.Permissions;
 import fr.traqueur.ressourcefulbees.commands.api.Command;
 import fr.traqueur.ressourcefulbees.commands.api.arguments.Arguments;
@@ -29,7 +29,7 @@ public class BeeCommand extends Command {
     @Override
     public void execute(CommandSender sender, Arguments args) {
         Player player = (Player) sender;
-        BeeType name = args.get("name");
+        IBeeType name = args.get("name");
 
         ItemStack beeSpawnEgg = this.manager.generateBeeSpawnEgg(name);
         player.getInventory().addItem(beeSpawnEgg);

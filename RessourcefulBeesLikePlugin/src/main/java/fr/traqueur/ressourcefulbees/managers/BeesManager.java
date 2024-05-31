@@ -5,8 +5,7 @@ import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
 import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.managers.IBeesManager;
-import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeePersistentDataType;
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.commands.BeeCommand;
 import fr.traqueur.ressourcefulbees.commands.api.CommandManager;
@@ -39,7 +38,7 @@ public class BeesManager implements IBeesManager {
         return item != null && item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(Keys.BEE);
     }
 
-    public ItemStack generateBeeSpawnEgg(BeeType type) {
+    public ItemStack generateBeeSpawnEgg(IBeeType type) {
         //generate bee egg with data key with value name
         ItemStack item = new ItemStack(Material.BEE_SPAWN_EGG);
         ItemMeta meta = item.getItemMeta();
@@ -52,7 +51,7 @@ public class BeesManager implements IBeesManager {
     }
 
 
-    public void spawnBee(Location location, BeeType type, boolean baby) {
+    public void spawnBee(Location location, IBeeType type, boolean baby) {
         Bee bee = location.getWorld().spawn(location.add(0.5, 1, 0.5), Bee.class, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         bee.getPersistentDataContainer().set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         bee.getPersistentDataContainer().set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);

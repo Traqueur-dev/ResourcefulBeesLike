@@ -4,7 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.models.IBee;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class BeeAdapter extends TypeAdapter<IBee> {
 
     @Override
     public IBee read(JsonReader jsonReader) throws IOException {
-        BeeType type = null;
+        IBeeType type = null;
         boolean baby = false;
 
         jsonReader.beginObject();
@@ -46,9 +46,9 @@ public class BeeAdapter extends TypeAdapter<IBee> {
         return new Bee(type, baby);
     }
 
-    private record Bee(BeeType type, boolean baby) implements IBee {
+    private record Bee(IBeeType type, boolean baby) implements IBee {
         @Override
-        public BeeType getBeeType() {
+        public IBeeType getBeeType() {
             return type;
         }
 

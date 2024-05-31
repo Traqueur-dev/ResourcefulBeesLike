@@ -1,13 +1,13 @@
 package fr.traqueur.ressourcefulbees.api.models;
 
-import net.minecraft.util.Tuple;
+import fr.traqueur.ressourcefulbees.api.Tuple;
 
 public interface IBreed {
 
-    Tuple<BeeType, BeeType> getParents();
+    Tuple<IBeeType, IBeeType> getParents();
 
     double getPercent();
 
-    BeeType getChild();
+    IBeeType getChild();
 
 }

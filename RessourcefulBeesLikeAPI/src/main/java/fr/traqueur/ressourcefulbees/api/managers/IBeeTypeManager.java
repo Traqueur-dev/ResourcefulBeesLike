@@ -1,17 +1,17 @@
 package fr.traqueur.ressourcefulbees.api.managers;
 
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 
 import java.util.HashMap;
 
 public interface IBeeTypeManager {
 
-    void registerBeeType(BeeType beeType);
+    void registerBeeType(IBeeType IBeeType);
 
-    BeeType getBeeType(String name);
+    IBeeType getBeeType(String name);
 
-    HashMap<String, BeeType> getBeeTypes();
+    HashMap<String, IBeeType> getBeeTypes();
 
     RessourcefulBeesLikeAPI getPlugin();
 }

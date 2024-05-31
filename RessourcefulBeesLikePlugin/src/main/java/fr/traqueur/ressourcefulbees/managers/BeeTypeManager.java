@@ -3,33 +3,33 @@ package fr.traqueur.ressourcefulbees.managers;
 import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 
 import java.util.HashMap;
 
 public class BeeTypeManager implements IBeeTypeManager {
 
     private final RessourcefulBeesLikePlugin plugin;
-    private final HashMap<String, BeeType> beeTypes;
+    private final HashMap<String, IBeeType> beeTypes;
 
     public BeeTypeManager(RessourcefulBeesLikePlugin plugin) {
         this.plugin = plugin;
         this.beeTypes = new HashMap<>();
 
-        for (BeeType beeType : BeeTypes.values()) {
-            this.registerBeeType(beeType);
+        for (IBeeType IBeeType : BeeTypes.values()) {
+            this.registerBeeType(IBeeType);
         }
     }
 
-    public void registerBeeType(BeeType beeType) {
-        this.beeTypes.put(beeType.getName().toLowerCase(), beeType);
+    public void registerBeeType(IBeeType IBeeType) {
+        this.beeTypes.put(IBeeType.getName().toLowerCase(), IBeeType);
     }
 
-    public BeeType getBeeType(String name) {
+    public IBeeType getBeeType(String name) {
         return this.beeTypes.getOrDefault(name.toLowerCase(), null);
     }
 
-    public HashMap<String, BeeType> getBeeTypes() {
+    public HashMap<String, IBeeType> getBeeTypes() {
         return beeTypes;
     }
 
@@ -38,7 +38,7 @@ public class BeeTypeManager implements IBeeTypeManager {
         return plugin;
     }
 
-    private enum BeeTypes implements BeeType {
+    private enum BeeTypes implements IBeeType {
 
         NORMAL("normal"),
         DIRT("Dirt"),

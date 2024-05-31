@@ -1,23 +1,23 @@
 package fr.traqueur.ressourcefulbees.models;
 
-import fr.traqueur.ressourcefulbees.api.models.BeeType;
+import fr.traqueur.ressourcefulbees.api.Tuple;
+import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.models.IBreed;
-import net.minecraft.util.Tuple;
 
 public class Breed implements IBreed {
 
-    private final Tuple<BeeType, BeeType> parents;
+    private final Tuple<IBeeType, IBeeType> parents;
     private final double percent;
-    private final BeeType child;
+    private final IBeeType child;
 
-    public Breed(BeeType parent1, BeeType parent2, double percent, BeeType child) {
+    public Breed(IBeeType parent1, IBeeType parent2, double percent, IBeeType child) {
         this.parents = new Tuple<>(parent1, parent2);
         this.percent = percent;
         this.child = child;
     }
 
     @Override
-    public Tuple<BeeType, BeeType> getParents() {
+    public Tuple<IBeeType, IBeeType> getParents() {
         return this.parents;
     }
 
@@ -27,7 +27,16 @@ public class Breed implements IBreed {
     }
 
     @Override
-    public BeeType getChild() {
+    public IBeeType getChild() {
         return this.child;
+    }
+
+    @Override
+    public String toString() {
+        return "Breed{" +
+                "parents=" + parents +
+                ", percent=" + percent +
+                ", child=" + child.getName() +
+                '}';
     }
 }
