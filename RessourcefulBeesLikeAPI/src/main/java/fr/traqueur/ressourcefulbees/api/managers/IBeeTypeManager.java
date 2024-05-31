@@ -9,7 +9,7 @@ public interface IBeeTypeManager {
 
     void registerBeeType(IBeeType IBeeType);
 
-    IBeeType getBeeType(String name);
+    IBeeType getBeeType(String type);
 
     HashMap<String, IBeeType> getBeeTypes();
 

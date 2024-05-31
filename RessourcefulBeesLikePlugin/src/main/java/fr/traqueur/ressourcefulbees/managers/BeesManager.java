@@ -45,7 +45,7 @@ public class BeesManager implements IBeesManager {
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         container.set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
-        meta.displayName(Component.text(type.getName() + " Bee Spawn Egg"));
+        meta.displayName(Component.text(type.getName() + " Spawn Egg"));
         item.setItemMeta(meta);
         return item;
     }
@@ -55,10 +55,10 @@ public class BeesManager implements IBeesManager {
         Bee bee = location.getWorld().spawn(location.add(0.5, 1, 0.5), Bee.class, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         bee.getPersistentDataContainer().set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         bee.getPersistentDataContainer().set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
-        if(!type.getName().equals("normal")) {
-            bee.customName(Component.text(type.getName() + " Bee"));
+        if(!type.getType().equals("normal_bee")) {
+            bee.customName(Component.text(type.getName()));
+            bee.setCustomNameVisible(true);
         }
-        bee.setCustomNameVisible(true);
         if(baby) {
             bee.setBaby();
         }

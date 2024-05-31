@@ -23,7 +23,7 @@ public class BeeAdapter extends TypeAdapter<IBee> {
     @Override
     public void write(JsonWriter jsonWriter, IBee iBee) throws IOException {
         jsonWriter.beginObject();
-        jsonWriter.name(TYPE).value(iBee.getBeeType().getName());
+        jsonWriter.name(TYPE).value(iBee.getBeeType().getType());
         jsonWriter.name(BABY).value(iBee.isBaby());
         jsonWriter.endObject();
 

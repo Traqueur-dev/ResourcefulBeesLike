@@ -45,8 +45,8 @@ public class BreedsManager implements IBreedsManager, Saveable {
 
         config.getMapList(ConfigKeys.BREEDS).forEach(map -> {
             String parents = (String) map.get(ConfigKeys.PARENTS);
-            List<IBeeType> parentsArray = Stream.of(parents.split(",")).map(s-> s.replace("_bee", "")).map(beeTypeManager::getBeeType).toList();
-            IBeeType child = this.beeTypeManager.getBeeType(((String) map.get(ConfigKeys.CHILD)).replace("_bee", ""));
+            List<IBeeType> parentsArray = Stream.of(parents.split(",")).map(beeTypeManager::getBeeType).toList();
+            IBeeType child = this.beeTypeManager.getBeeType(((String) map.get(ConfigKeys.CHILD)));
             double chance = (double) map.get(ConfigKeys.CHANCE);
             this.breeds.add(new Breed(parentsArray.get(0), parentsArray.get(1), chance, child));
         });
@@ -61,8 +61,8 @@ public class BreedsManager implements IBreedsManager, Saveable {
         List<Map<String, Object>> breeds = this.breeds
                 .stream()
                 .map(breed -> (Map<String, Object>) new HashMap<String, Object>() {{
-            put(ConfigKeys.PARENTS, breed.getParents().getA().getName() + "," + breed.getParents().getB().getName());
-            put(ConfigKeys.CHILD, breed.getChild().getName());
+            put(ConfigKeys.PARENTS, breed.getParents().getA().getType() + "," + breed.getParents().getB().getType());
+            put(ConfigKeys.CHILD, breed.getChild().getType());
             put(ConfigKeys.CHANCE, breed.getPercent());
         }}).toList();
 

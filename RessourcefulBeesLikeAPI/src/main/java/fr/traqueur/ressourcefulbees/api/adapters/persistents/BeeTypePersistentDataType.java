@@ -25,7 +25,7 @@ public class BeeTypePersistentDataType implements PersistentDataType<String, IBe
 
     @Override
     public @NotNull String toPrimitive(@NotNull IBeeType bee, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
-        return bee.getName().toLowerCase();
+        return bee.getType().toLowerCase();
     }
 
     @Override

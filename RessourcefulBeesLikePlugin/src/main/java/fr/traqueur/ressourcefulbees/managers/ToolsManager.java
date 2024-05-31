@@ -85,7 +85,7 @@ public class ToolsManager implements IToolsManager, Saveable {
         List<IBee> bees = container.getOrDefault(Keys.BEE_BOX_BEES, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE), new ArrayList<>());
         bees = new ArrayList<>(bees);
         PersistentDataContainer beeContainer = bee.getPersistentDataContainer();
-        IBeeType IBeeType = this.beeTypeManager.getBeeType("normal");
+        IBeeType IBeeType = this.beeTypeManager.getBeeType("normal_bee");
         if(beeContainer.has(Keys.BEE)) {
             IBeeType = beeContainer.get(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE);
         }
@@ -146,7 +146,7 @@ public class ToolsManager implements IToolsManager, Saveable {
             List<Component> lore = bees.stream()
                     .collect(Collectors.groupingBy((e) -> e.getBeeType().getName(), Collectors.summingInt(e -> 1)))
                     .entrySet().stream()
-                    .map(entry -> Component.text(entry.getKey() + " Bee x" + entry.getValue(), NamedTextColor.YELLOW))
+                    .map(entry -> Component.text(entry.getKey() + " x" + entry.getValue(), NamedTextColor.YELLOW))
                     .collect(Collectors.toList());
             lore.add(Component.empty());
             lore.add(Component.text("Total: " + size + " bees", NamedTextColor.GRAY));
