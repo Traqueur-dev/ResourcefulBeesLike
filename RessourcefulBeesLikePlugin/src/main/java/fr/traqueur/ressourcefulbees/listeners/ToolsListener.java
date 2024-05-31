@@ -26,6 +26,7 @@ public class ToolsListener implements Listener {
 
     public ToolsListener(IToolsManager manager) {
         this.manager = manager;
+        this.isEntityInteraction = false;
     }
 
     @EventHandler
@@ -69,7 +70,7 @@ public class ToolsListener implements Listener {
         boolean sneak = player.isSneaking();
         event.setCancelled(true);
 
-        BeeReleaseEvent beeReleaseEvent = new BeeReleaseEvent(beebox, location, sneak);
+        BeeReleaseEvent beeReleaseEvent = new BeeReleaseEvent(beebox, location == null ? player.getLocation() : location, sneak);
         Bukkit.getPluginManager().callEvent(beeReleaseEvent);
 
     }

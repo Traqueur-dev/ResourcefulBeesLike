@@ -26,7 +26,6 @@ public class BeeListener implements Listener {
 
     private final IBeesManager manager;
     private final IBeeTypeManager beeTypeManager;
-    private boolean isEntityInteraction;
 
     public BeeListener(IBeesManager manager, IBeeTypeManager beeTypeManager) {
         this.manager = manager;
@@ -35,8 +34,6 @@ public class BeeListener implements Listener {
 
     @EventHandler
     public void onTryToSpawnBeeOnEntity(PlayerInteractEntityEvent event) {
-        isEntityInteraction = true;
-
         if(event.getHand() != EquipmentSlot.HAND) {
             return;
         }
@@ -52,10 +49,6 @@ public class BeeListener implements Listener {
 
     @EventHandler
     public void onTryToSpawnBee(PlayerInteractEvent event) {
-        if(isEntityInteraction) {
-            isEntityInteraction = false;
-            return;
-        }
         if(event.getHand() != EquipmentSlot.HAND) {
             return;
         }

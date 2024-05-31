@@ -1,5 +1,6 @@
 package fr.traqueur.ressourcefulbees.managers;
 
+import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLike;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
 import fr.traqueur.ressourcefulbees.api.Saveable;
@@ -9,6 +10,7 @@ import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.models.IBreed;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.ressourcefulbees.api.utils.ConfigKeys;
+import fr.traqueur.ressourcefulbees.listeners.BreedsListener;
 import fr.traqueur.ressourcefulbees.models.Breed;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,14 +21,29 @@ import java.util.stream.Stream;
 
 public class BreedsManager implements IBreedsManager, Saveable {
 
-    private final RessourcefulBeesLike plugin;
+    private final RessourcefulBeesLikePlugin plugin;
     private final IBeeTypeManager beeTypeManager;
     private final Set<IBreed> breeds;
 
-    public BreedsManager(RessourcefulBeesLike plugin) {
+    public BreedsManager(RessourcefulBeesLikePlugin plugin) {
         this.plugin = plugin;
         this.beeTypeManager = plugin.getManager(IBeeTypeManager.class);
         this.breeds = new HashSet<>();
+
+        this.plugin.getServer().getPluginManager().registerEvents(new BreedsListener(this), this.plugin);
+    }
+
+    @Override
+    public IBreed getBreed(IBeeType fatherType, IBeeType motherType) {
+        for (IBreed breed : this.breeds) {
+            if(breed.getParents().getA().getType().equals(fatherType.getType())
+                    && breed.getParents().getB().getType().equals(motherType.getType()) ||
+                    breed.getParents().getA().getType().equals(motherType.getType())
+                    && breed.getParents().getB().getType().equals(fatherType.getType())) {
+                return breed;
+            }
+        }
+        return null;
     }
 
     @Override

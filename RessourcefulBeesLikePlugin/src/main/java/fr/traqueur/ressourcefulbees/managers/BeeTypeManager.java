@@ -3,12 +3,16 @@ package fr.traqueur.ressourcefulbees.managers;
 import fr.traqueur.ressourcefulbees.RessourcefulBeesLikePlugin;
 import fr.traqueur.ressourcefulbees.api.RessourcefulBeesLikeAPI;
 import fr.traqueur.ressourcefulbees.api.Saveable;
+import fr.traqueur.ressourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
 import fr.traqueur.ressourcefulbees.api.managers.IBeeTypeManager;
 import fr.traqueur.ressourcefulbees.api.models.IBeeType;
 import fr.traqueur.ressourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.ressourcefulbees.api.utils.ConfigKeys;
+import fr.traqueur.ressourcefulbees.api.utils.Keys;
 import fr.traqueur.ressourcefulbees.models.Breed;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Bee;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +37,14 @@ public class BeeTypeManager implements IBeeTypeManager, Saveable {
 
     public IBeeType getBeeType(String type) {
         return this.beeTypes.getOrDefault(type.toLowerCase(), null);
+    }
+
+    public IBeeType getBeeTypeFromBee(Bee bee) {
+        PersistentDataContainer container = bee.getPersistentDataContainer();
+        if(!container.has(Keys.BEE)) {
+            return this.getBeeType("normal_bee");
+        }
+        return container.get(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE);
     }
 
     public HashMap<String, IBeeType> getBeeTypes() {
