@@ -10,5 +10,5 @@ public class ConfigKeys {
     public static final String PARENTS = "parents";
     public static final String CHILD = "child";
     public static final String CHANCE = "chance";
-
+    public static final String FOOD = "food";
 }

@@ -30,13 +30,4 @@ public class Breed implements IBreed {
     public IBeeType getChild() {
         return this.child;
     }
-
-    @Override
-    public String toString() {
-        return "Breed{" +
-                "parents=" + parents +
-                ", percent=" + percent +
-                ", child=" + child.getName() +
-                '}';
-    }
 }
