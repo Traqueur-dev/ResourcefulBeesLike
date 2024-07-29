@@ -1,0 +1,4 @@
+mutations:
+  - parent: cobblestone_bee
+    child: andesite_bee
+    block: ANDESITE

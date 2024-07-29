@@ -1,0 +1,13 @@
+crafting_enabled: true
+upgrades:
+  - multiplier: 1.0
+    upgrade_level: 1
+    reducer: 1.0
+    craft:
+      pattern:
+        - "XXX"
+        - "XBX"
+        - "XXX"
+      ingredients:
+        X: "SHORT_GRASS"
+        B: "BEEHIVE"

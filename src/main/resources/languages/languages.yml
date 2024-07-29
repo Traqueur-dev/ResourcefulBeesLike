@@ -1,0 +1,5 @@
+languages:
+- fr_FR: fr.yml
+- en_US: en.yml
+
+used_lang: fr_FR

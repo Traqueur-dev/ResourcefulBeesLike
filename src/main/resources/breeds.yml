@@ -1,0 +1,7 @@
+breeds:
+  - parents: cobblestone_bee,gravel_bee
+    child: sand_bee
+    chance: 1.0
+  - parents: cobblestone_bee,dirt_bee
+    child: gravel_bee
+    chance: 1.0
