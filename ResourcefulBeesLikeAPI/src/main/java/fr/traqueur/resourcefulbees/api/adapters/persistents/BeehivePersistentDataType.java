@@ -13,7 +13,6 @@ import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 public class BeehivePersistentDataType implements PersistentDataType<String, Beehive> {
 
@@ -31,22 +30,22 @@ public class BeehivePersistentDataType implements PersistentDataType<String, Bee
     }
 
     @Override
-    public @NotNull Class<String> getPrimitiveType() {
+    public  Class<String> getPrimitiveType() {
         return String.class;
     }
 
     @Override
-    public @NotNull Class<Beehive> getComplexType() {
+    public Class<Beehive> getComplexType() {
         return Beehive.class;
     }
 
     @Override
-    public @NotNull String toPrimitive(@NotNull Beehive bee, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
+    public  String toPrimitive( Beehive bee,  PersistentDataAdapterContext persistentDataAdapterContext) {
         return gson.toJson(bee);
     }
 
     @Override
-    public @NotNull Beehive fromPrimitive(@NotNull String s, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
+    public  Beehive fromPrimitive( String s,  PersistentDataAdapterContext persistentDataAdapterContext) {
         return gson.fromJson(s, Beehive.class);
     }
 }

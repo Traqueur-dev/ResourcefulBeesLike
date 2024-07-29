@@ -5,8 +5,6 @@ import fr.traqueur.resourcefulbees.api.events.BeeCatchEvent;
 import fr.traqueur.resourcefulbees.api.events.BeeReleaseEvent;
 import fr.traqueur.resourcefulbees.api.managers.ToolsManager;
 import fr.traqueur.resourcefulbees.api.models.BeeTools;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Bee;
@@ -64,7 +62,7 @@ public class ToolsListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        Location location = event.getInteractionPoint();
+        Location location = event.getClickedBlock() != null ? event.getClickedBlock().getLocation() : player.getLocation();
         ItemStack beebox = player.getInventory().getItemInMainHand();
         BeeTools beeTools = this.manager.isBeeJar(beebox) ? BeeTools.BEE_JAR : BeeTools.BEE_BOX;
         if (!this.manager.isBeesBox(beebox) && !this.manager.isBeeJar(beebox)) {
@@ -82,12 +80,12 @@ public class ToolsListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCatch(BeeCatchEvent event) {
         if(this.manager.isBeeBoxFull(event.getBeeCatcher())) {
-            event.getPlayer().sendMessage(Component.text(this.manager.getPlugin().translate(LangKeys.BEE_BOX_FULL), NamedTextColor.RED));
+            this.manager.getPlugin().sendMessage(event.getPlayer(), this.manager.getPlugin().translate(LangKeys.BEE_BOX_FULL));
             return;
         }
 
         if(this.manager.isBeeJarFull(event.getBeeCatcher())) {
-            event.getPlayer().sendMessage(Component.text(this.manager.getPlugin().translate(LangKeys.BEE_JAR_FULL), NamedTextColor.RED));
+            this.manager.getPlugin().sendMessage(event.getPlayer(), this.manager.getPlugin().translate(LangKeys.BEE_JAR_FULL));
             return;
         }
 

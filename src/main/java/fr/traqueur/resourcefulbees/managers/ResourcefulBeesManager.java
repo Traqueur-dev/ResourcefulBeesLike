@@ -13,7 +13,7 @@ import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.listeners.BeeListener;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
+import fr.traqueur.resourcefulbees.utils.PaperUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -48,7 +48,7 @@ public class ResourcefulBeesManager implements BeesManager {
         container.set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         container.set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
         meta.setCustomModelData(type.getId());
-        meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.SPAWN_EGG_NAME, Formatter.beetype(type))));
+        meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.SPAWN_EGG_NAME, Formatter.beetype(type))));
         item.setItemMeta(meta);
         return item;
     }
@@ -80,7 +80,7 @@ public class ResourcefulBeesManager implements BeesManager {
         bee.getPersistentDataContainer().set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
 
         if(!type.getType().equals("normal_bee")) {
-            bee.customName(ComponentUtils.of(this.plugin.translate(type.getType())));
+            bee.setCustomName(this.plugin.translate(type.getType()));
             bee.setCustomNameVisible(true);
         }
         if(baby) {

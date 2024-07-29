@@ -11,7 +11,7 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
+import fr.traqueur.resourcefulbees.utils.PaperUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +21,7 @@ import org.bukkit.entity.Bee;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -75,7 +76,7 @@ public class BeehivesListener implements Listener {
         fr.traqueur.resourcefulbees.api.models.Beehive resourcefulBeehive = container.getOrDefault(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, new ResourcefulBeehive());
         itemContainer.set(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, resourcefulBeehive);
         itemContainer.set(Keys.HONEY_LEVEL, PersistentDataType.INTEGER, honeyLevel);
-        blockStateMeta.displayName(ComponentUtils.of(this.beehivesManager.getPlugin().translate(LangKeys.BEEHIVE_NAME, Formatter.upgrade(resourcefulBeehive.getUpgrade()))));
+        blockStateMeta.setDisplayName(this.beehivesManager.getPlugin().reset(this.beehivesManager.getPlugin().translate(LangKeys.BEEHIVE_NAME, Formatter.upgrade(resourcefulBeehive.getUpgrade()))));
         blockStateMeta.setBlockState(beehive);
         item.setItemMeta(blockStateMeta);
 
@@ -171,7 +172,7 @@ public class BeehivesListener implements Listener {
             }
             BeeType type = this.beehivesManager.removeBeeFromHive(beehive);
             BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type, bee.getLocation(),!bee.isAdult(), bee.hasNectar(), CreatureSpawnEvent.SpawnReason.BEEHIVE);
-            beeSpawnEvent.callEvent();
+            Bukkit.getPluginManager().callEvent(beeSpawnEvent);
             bee.remove();
         });
     }
@@ -185,7 +186,7 @@ public class BeehivesListener implements Listener {
             return;
         }
 
-        if(event.getAction().isLeftClick()) {
+        if(event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) {
             return;
         }
 

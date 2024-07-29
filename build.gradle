@@ -26,6 +26,10 @@ allprojects {
         mavenCentral()
         maven { url 'https://jitpack.io' }
         maven {
+            name = "spigotmc-repo"
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+        maven {
             name = "papermc-repo"
             url = "https://repo.papermc.io/repository/maven-public/"
         }
@@ -36,6 +40,7 @@ allprojects {
     }
 
     dependencies {
+        //compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
         compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
     }
 

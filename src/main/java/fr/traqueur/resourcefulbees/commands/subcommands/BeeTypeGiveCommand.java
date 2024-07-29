@@ -8,8 +8,6 @@ import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.managers.BeesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.Permissions;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +33,6 @@ public class BeeTypeGiveCommand extends Command<ResourcefulBeesLikePlugin> {
 
         ItemStack beeSpawnEgg = this.manager.generateBeeSpawnEgg(name);
         player.getInventory().addItem(beeSpawnEgg);
-        player.sendMessage(Component.text(this.manager.getPlugin().translate(LangKeys.BEE_GIVE, Formatter.beetype(name)), NamedTextColor.GREEN));
+        this.getPlugin().sendMessage(player, this.manager.getPlugin().translate(LangKeys.BEE_GIVE, Formatter.beetype(name)));
     }
 }

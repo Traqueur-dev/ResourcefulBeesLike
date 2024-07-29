@@ -76,7 +76,7 @@ public class BeeListener implements Listener {
 
         event.setCancelled(true);
         if(player.getGameMode() != GameMode.CREATIVE) {
-            item.subtract();
+            item.setAmount(item.getAmount() - 1);
         }
         BeeType bee = item.getItemMeta().getPersistentDataContainer().getOrDefault(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, this.beeTypeManager.getBeeType("normal"));
         BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(bee,location, baby, false, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
@@ -104,7 +104,7 @@ public class BeeListener implements Listener {
                     .getOrDefault(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, this.beeTypeManager.getBeeType("normal_bee"));
 
             BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type, location, !bee.isAdult(), bee.hasNectar(), CreatureSpawnEvent.SpawnReason.NATURAL);
-            beeSpawnEvent.callEvent();
+            Bukkit.getPluginManager().callEvent(beeSpawnEvent);
             bee.remove();
         }
     }

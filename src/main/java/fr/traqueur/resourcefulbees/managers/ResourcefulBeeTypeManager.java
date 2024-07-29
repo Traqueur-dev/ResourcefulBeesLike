@@ -46,7 +46,7 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
         ShapelessRecipe recipe = new ShapelessRecipe(key, ingredient);
         recipe.addIngredient(new RecipeChoice.ExactChoice(ingredient));
 
-        this.plugin.getServer().addRecipe(recipe, true);
+        this.plugin.getServer().addRecipe(recipe);
     }
 
     public void registerBeeType(BeeType beeType) {

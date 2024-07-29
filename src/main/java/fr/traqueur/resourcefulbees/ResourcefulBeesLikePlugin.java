@@ -2,32 +2,43 @@ package fr.traqueur.resourcefulbees;
 
 import fr.traqueur.commands.api.CommandManager;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLike;
+import fr.traqueur.resourcefulbees.api.entity.BeeEntity;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.lang.LangKey;
 import fr.traqueur.resourcefulbees.api.managers.*;
 import fr.traqueur.resourcefulbees.api.models.BeeTools;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
+import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
 import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
 import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
+import fr.traqueur.resourcefulbees.utils.PaperUtils;
+import fr.traqueur.resourcefulbees.utils.SpigotUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 
 public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
+    private MessageUtils messageUtils;
     private CommandManager commandManager;
     private List<Saveable> saveables;
 
@@ -46,6 +57,19 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
     @Override
     public void onEnable() {
         new Metrics(this, 22825);
+
+        this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
+
+        String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
+        String className = String.format("fr.traqueur.resourcefulbees.nms.%s.entity.tasks.MoveTask", version);
+        try {
+            Class<?> clazz = Class.forName(className);
+            Constructor<?> constructor = clazz.getConstructor();
+            Bukkit.getScheduler().runTaskTimer(this, (Runnable) constructor.newInstance(), 0L, 1L);
+        } catch (Exception exception) {
+            BeeLogger.severe("Cannot create a new instance for the class " + className);
+            BeeLogger.severe(exception.getMessage());
+        }
 
         for (LangKeys value : LangKeys.values()) {
             this.registerLanguageKey(value);
@@ -141,6 +165,26 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         }
 
         this.languages.put(key, langConfig);
+    }
+
+    @Override
+    public void sendMessage(Player player, String message) {
+        this.messageUtils.sendMessage(player, message);
+    }
+
+    @Override
+    public void success(Player player, String s) {
+        this.messageUtils.success(player, s);
+    }
+
+    @Override
+    public void error(Player player, String s) {
+        this.messageUtils.error(player, s);
+    }
+
+    @Override
+    public String reset(String s) {
+        return this.messageUtils.reset(s);
     }
 
     @Override

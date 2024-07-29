@@ -7,8 +7,6 @@ import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.managers.ToolsManager;
 import fr.traqueur.resourcefulbees.api.models.BeeTools;
 import fr.traqueur.resourcefulbees.api.utils.Permissions;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -48,6 +46,6 @@ public class BeeToolsGiveCommand extends Command<ResourcefulBeesLikePlugin> {
         }
 
         player.getInventory().addItem(tool);
-        player.sendMessage(Component.text(this.manager.getPlugin().translate(key), NamedTextColor.GREEN));
+        this.getPlugin().sendMessage(player, this.manager.getPlugin().translate(key));
     }
 }

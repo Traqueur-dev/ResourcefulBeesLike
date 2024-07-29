@@ -16,9 +16,8 @@ import fr.traqueur.resourcefulbees.api.constants.Constants;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.listeners.ToolsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBee;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import fr.traqueur.resourcefulbees.utils.PaperUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -77,7 +76,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
         ItemStack item = new ItemStack(Constants.TOOLS_MATERIAL);
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(customDataBox);
-        meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.BEE_BOX_NAME)));
+        meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.BEE_BOX_NAME)));
         item.setItemMeta(meta);
         this.updateBeeBox(item);
         return item;
@@ -87,7 +86,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
         ItemStack item = new ItemStack(Constants.TOOLS_MATERIAL);
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(customDataJar);
-        meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.BEE_JAR_NAME)));
+        meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.BEE_JAR_NAME)));
         item.setItemMeta(meta);
         this.updateBeeJar(item);
         return item;
@@ -213,14 +212,14 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
         ItemMeta meta = beeJar.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         Bee bee = container.get(Keys.BEES_INSIDE, BeePersistentDataType.INSTANCE);
-        List<Component> lore = new ArrayList<>();
+        List<String> lore = new ArrayList<>();
         if(bee != null) {
-            lore.add(Component.text(this.getPlugin().translate(bee.getBeeType().getType()), NamedTextColor.YELLOW));
+            lore.add(ChatColor.YELLOW + this.getPlugin().translate(bee.getBeeType().getType()));
         } else {
-            lore.add(Component.text(this.getPlugin().translate(LangKeys.BEE_JAR_EMPTY), NamedTextColor.GRAY));
+            lore.add(ChatColor.GRAY + this.getPlugin().translate(LangKeys.BEE_JAR_EMPTY));
         }
 
-        meta.lore(lore);
+        meta.setLore(lore);
         beeJar.setItemMeta(meta);
     }
 
@@ -234,24 +233,23 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
 
         List<Bee> bees = container.get(Keys.BEES_INSIDE, PersistentDataType.LIST.listTypeFrom(BeePersistentDataType.INSTANCE));
 
+        List<String> lore = new ArrayList<>();
         if(bees != null) {
             int size = bees.size();
 
-            List<Component> lore = bees.stream()
+            lore = bees.stream()
                     .collect(Collectors.groupingBy((e) -> e.getBeeType().getType(), Collectors.summingInt(e -> 1)))
                     .entrySet().stream()
-                    .map(entry -> Component.text(this.getPlugin().translate(entry.getKey()) + " x" + entry.getValue(), NamedTextColor.YELLOW))
+                    .map(entry -> ChatColor.YELLOW + this.getPlugin().translate(entry.getKey()) + " x" + entry.getValue())
                     .collect(Collectors.toList());
-            lore.add(Component.empty());
-            lore.add(Component.text("Total: " + size + " " + this.plugin.translate("normal_bee") + (size > 1 ? "s" : ""), NamedTextColor.GRAY));
-            meta.lore(lore);
+            lore.add("");
+            lore.add(ChatColor.GRAY + "Total: " + size + " " + this.plugin.translate("normal_bee") + (size > 1 ? "s" : ""));
         } else {
-            List<Component> lore = new ArrayList<>();
-            lore.add(Component.empty());
-            lore.add(Component.text("Total: 0 " + this.plugin.translate("normal_bee"), NamedTextColor.GRAY));
-            meta.lore(lore);
-        }
+            lore.add("");
+            lore.add(ChatColor.GRAY + "Total: 0 " + this.plugin.translate("normal_bee"));
 
+        }
+        meta.setLore(lore);
         beeBox.setItemMeta(meta);
     }
 
