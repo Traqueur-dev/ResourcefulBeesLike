@@ -3,6 +3,8 @@ package fr.traqueur.resourcefulbees.api.constants;
 public class ConfigKeys {
 
     public static final String BEE_BOX_MAX_BEES = "bee-box-max-bees";
+    public static final String CUSTOM_DATA_JAR = "custom_data_jar";
+    public static final String CUSTOM_DATA_BOX = "custom_data_box";
     public static final String BEETYPE = "beetypes";
     public static final String TYPE = "type";
     public static final String ID = "id";

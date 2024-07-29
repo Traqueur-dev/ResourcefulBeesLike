@@ -37,6 +37,8 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
     private final ResourcefulBeesLikePlugin plugin;
     private final BeeTypeManager beeTypeManager;
     private int beeBoxMaxBees;
+    private int customDataJar;
+    private int customDataBox;
 
     public ResourcefulToolsManager(ResourcefulBeesLikePlugin plugin) {
         this.plugin = plugin;
@@ -55,7 +57,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
             return false;
         }
 
-        return meta.getCustomModelData() == Constants.BEE_BOX_CUSTOM_MODEL_DATA;
+        return meta.getCustomModelData() == customDataBox;
     }
 
     public boolean isBeeJar(ItemStack item) {
@@ -68,13 +70,13 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
             return false;
         }
 
-        return meta.getCustomModelData() == Constants.BEE_JAR_CUSTOM_MODEL_DATA;
+        return meta.getCustomModelData() == customDataJar;
     }
 
     public ItemStack generateBeeBox() {
         ItemStack item = new ItemStack(Constants.TOOLS_MATERIAL);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(Constants.BEE_BOX_CUSTOM_MODEL_DATA);
+        meta.setCustomModelData(customDataBox);
         meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.BEE_BOX_NAME)));
         item.setItemMeta(meta);
         this.updateBeeBox(item);
@@ -84,7 +86,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
     public ItemStack generateBeeJar() {
         ItemStack item = new ItemStack(Constants.TOOLS_MATERIAL);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(Constants.BEE_JAR_CUSTOM_MODEL_DATA);
+        meta.setCustomModelData(customDataJar);
         meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.BEE_JAR_NAME)));
         item.setItemMeta(meta);
         this.updateBeeJar(item);
@@ -267,6 +269,8 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
     public void loadData() {
         FileConfiguration config = this.getConfig(this.plugin);
         this.beeBoxMaxBees = config.getInt(ConfigKeys.BEE_BOX_MAX_BEES);
+        this.customDataBox = config.getInt(ConfigKeys.CUSTOM_DATA_BOX);
+        this.customDataJar = config.getInt(ConfigKeys.CUSTOM_DATA_JAR);
     }
 
     @Override
