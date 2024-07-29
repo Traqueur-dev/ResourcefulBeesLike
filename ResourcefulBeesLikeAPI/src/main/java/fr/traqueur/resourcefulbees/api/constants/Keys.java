@@ -1,4 +1,4 @@
-package fr.traqueur.resourcefulbees.api.utils;
+package fr.traqueur.resourcefulbees.api.constants;
 
 import org.bukkit.NamespacedKey;
 

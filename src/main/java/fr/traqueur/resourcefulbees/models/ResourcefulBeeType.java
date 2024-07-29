@@ -3,7 +3,7 @@ package fr.traqueur.resourcefulbees.models;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.MaterialPersistentDataType;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
-import fr.traqueur.resourcefulbees.api.utils.Keys;
+import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.utils.ComponentUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

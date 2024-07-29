@@ -9,13 +9,14 @@ import fr.traqueur.resourcefulbees.api.models.BeeTools;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.utils.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
 import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -44,6 +45,8 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
     @Override
     public void onEnable() {
+        new Metrics(this, 22825);
+
         for (LangKeys value : LangKeys.values()) {
             this.registerLanguageKey(value);
         }

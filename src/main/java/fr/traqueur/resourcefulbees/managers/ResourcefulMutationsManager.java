@@ -9,7 +9,7 @@ import fr.traqueur.resourcefulbees.api.managers.Saveable;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.Mutation;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.utils.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.listeners.MutationsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulMutation;
 import org.bukkit.Location;
