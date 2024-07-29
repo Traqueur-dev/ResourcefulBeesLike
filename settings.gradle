@@ -4,5 +4,7 @@ include 'ResourcefulBeesLikeAPI'
 include 'ResourcefulBeesLikeNMS'
 include 'ResourcefulBeesLikeNMS:V1_20_4'
 include 'ResourcefulBeesLikeNMS:V1_21'
-findProject(':ResourcefulBeesLikeNMS:V1_21')?.name = 'V1_21'
+include 'ResourcefulBeesLikePlatform'
+include 'ResourcefulBeesLikePlatform:Spigot'
+include 'ResourcefulBeesLikePlatform:PaperSpigot'
 

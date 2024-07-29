@@ -16,7 +16,6 @@ import fr.traqueur.resourcefulbees.api.constants.Constants;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.listeners.ToolsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBee;
-import fr.traqueur.resourcefulbees.utils.PaperUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;

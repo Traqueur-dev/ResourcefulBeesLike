@@ -13,7 +13,6 @@ import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.listeners.BeeListener;
-import fr.traqueur.resourcefulbees.utils.PaperUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -25,6 +24,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.NoSuchElementException;
 
 public class ResourcefulBeesManager implements BeesManager {
 
@@ -61,9 +62,21 @@ public class ResourcefulBeesManager implements BeesManager {
             Class<?> clazz = Class.forName(className);
             Constructor<?> constructor = clazz.getConstructor(World.class, ItemStack.class);
             return (BeeEntity) constructor.newInstance(world, food);
-        } catch (Exception exception) {
-            BeeLogger.severe("Cannot create a new instance for the class " + className);
-            BeeLogger.severe(exception.getMessage());
+        } catch (ClassNotFoundException e) {
+            BeeLogger.severe("Cannot find the class " + className);
+            BeeLogger.severe(e.getMessage());
+        } catch (NoSuchMethodException e) {
+            BeeLogger.severe("Cannot find the constructor for " + className);
+            BeeLogger.severe(e.getMessage());
+        } catch (IllegalAccessException e) {
+            BeeLogger.severe("IllegalAccessException");
+            BeeLogger.severe(e.getMessage());
+        } catch (InvocationTargetException e) {
+            BeeLogger.severe("InvocationTargetException");
+            BeeLogger.severe(e.getMessage());
+        } catch (InstantiationException e) {
+            BeeLogger.severe("Cannot instantiate " + className);
+            BeeLogger.severe(e.getMessage());
         }
 
         return null;

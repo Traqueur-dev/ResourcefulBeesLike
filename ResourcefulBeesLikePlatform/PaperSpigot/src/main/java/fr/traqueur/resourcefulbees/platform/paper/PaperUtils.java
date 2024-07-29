@@ -1,10 +1,9 @@
-package fr.traqueur.resourcefulbees.utils;
+package fr.traqueur.resourcefulbees.platform.paper;
 
 import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PaperUtils implements MessageUtils {

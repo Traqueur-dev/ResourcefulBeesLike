@@ -1,4 +1,4 @@
-package fr.traqueur.resourcefulbees.utils;
+package fr.traqueur.resourcefulbees.platform.spigot;
 
 import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
 import org.bukkit.ChatColor;

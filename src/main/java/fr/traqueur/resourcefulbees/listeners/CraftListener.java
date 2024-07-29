@@ -7,7 +7,6 @@ import fr.traqueur.resourcefulbees.api.managers.UpgradesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveCraft;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
-import fr.traqueur.resourcefulbees.utils.PaperUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

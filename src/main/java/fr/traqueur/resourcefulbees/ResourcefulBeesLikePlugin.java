@@ -2,7 +2,6 @@ package fr.traqueur.resourcefulbees;
 
 import fr.traqueur.commands.api.CommandManager;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLike;
-import fr.traqueur.resourcefulbees.api.entity.BeeEntity;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.lang.LangKey;
 import fr.traqueur.resourcefulbees.api.managers.*;
@@ -19,15 +18,12 @@ import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
-import fr.traqueur.resourcefulbees.utils.PaperUtils;
-import fr.traqueur.resourcefulbees.utils.SpigotUtils;
+import fr.traqueur.resourcefulbees.platform.spigot.SpigotUtils;
+import fr.traqueur.resourcefulbees.platform.paper.PaperUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
@@ -59,17 +55,6 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         new Metrics(this, 22825);
 
         this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
-
-        String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-        String className = String.format("fr.traqueur.resourcefulbees.nms.%s.entity.tasks.MoveTask", version);
-        try {
-            Class<?> clazz = Class.forName(className);
-            Constructor<?> constructor = clazz.getConstructor();
-            Bukkit.getScheduler().runTaskTimer(this, (Runnable) constructor.newInstance(), 0L, 1L);
-        } catch (Exception exception) {
-            BeeLogger.severe("Cannot create a new instance for the class " + className);
-            BeeLogger.severe(exception.getMessage());
-        }
 
         for (LangKeys value : LangKeys.values()) {
             this.registerLanguageKey(value);

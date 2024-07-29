@@ -15,7 +15,6 @@ import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveCraft;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveUpgrade;
-import fr.traqueur.resourcefulbees.utils.PaperUtils;
 import fr.traqueur.resourcefulbees.utils.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

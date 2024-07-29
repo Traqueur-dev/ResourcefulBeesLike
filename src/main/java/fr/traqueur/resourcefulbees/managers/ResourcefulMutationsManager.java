@@ -8,10 +8,14 @@ import fr.traqueur.resourcefulbees.api.managers.MutationsManager;
 import fr.traqueur.resourcefulbees.api.managers.Saveable;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.Mutation;
+import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.listeners.MutationsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulMutation;
+import fr.traqueur.resourcefulbees.platform.paper.PaperEntityMoveListener;
+import fr.traqueur.resourcefulbees.platform.spigot.SpigotEntityMoveListener;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +39,22 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
         this.beeTypeManager = plugin.getManager(BeeTypeManager.class);
         this.beesManager = plugin.getManager(BeesManager.class);
         this.mutations = new HashMap<>();
+
+        if(plugin.isPaperVersion()) {
+            plugin.getServer().getPluginManager().registerEvents(new PaperEntityMoveListener(plugin, this), plugin);
+        } else {
+            String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
+            String className = String.format("fr.traqueur.resourcefulbees.nms.%s.entity.tasks.MoveTask", version);
+            try {
+                Class<?> clazz = Class.forName(className);
+                Constructor<?> constructor = clazz.getConstructor();
+                Bukkit.getScheduler().runTaskTimer(plugin, (Runnable) constructor.newInstance(), 0L, 1L);
+            } catch (Exception exception) {
+                BeeLogger.severe("Cannot create a new instance for the class " + className);
+                BeeLogger.severe(exception.getMessage());
+            }
+            plugin.getServer().getPluginManager().registerEvents(new SpigotEntityMoveListener(plugin, this), plugin);
+        }
 
         plugin.getServer().getPluginManager().registerEvents(new MutationsListener(plugin, this), plugin);
     }
