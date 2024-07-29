@@ -36,7 +36,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+        compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
     }
 
 
@@ -66,6 +66,8 @@ repositories {
 dependencies {
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
     implementation project(':ResourcefulBeesLikeAPI')
+
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
     implementation "com.github.Traqueur-dev:CommandsAPI:1.3.5"
 }
 
@@ -91,6 +93,7 @@ shadowJar {
     dependsOn(jar)
 
     relocate 'fr.traqueur.commands.api', 'fr.traqueur.resourcefulbees.commands.api'
+    relocate 'org.bstats', 'fr.traqueur.resourcefulbees.bstats'
 
     archiveFileName = rootProject.name + "-" + rootProject.version + ".jar"
 

@@ -7,7 +7,7 @@ import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BeehivesManager;
 import fr.traqueur.resourcefulbees.api.managers.UpgradesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
-import fr.traqueur.resourcefulbees.api.utils.Keys;
+import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.listeners.BeehivesListener;
 import fr.traqueur.resourcefulbees.listeners.CraftListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
