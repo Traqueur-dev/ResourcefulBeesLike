@@ -59,10 +59,11 @@ dependencies {
 
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
     implementation project(':ResourcefulBeesLikeAPI')
-    implementation project(':ResourcefulBeesLikeNMS:V1_20_4')
-    /*rootProject.subprojects.findAll { it.path.startsWith(':ResourcefulBeesLikeNMS:') }.each { subproject ->
+
+    rootProject.subprojects.findAll { it.path.startsWith(':ResourcefulBeesLikeNMS:') }.each { subproject ->
         implementation project(subproject.path)
-    }*/
+    }
+
     implementation project(':ResourcefulBeesLikePlatform:Spigot')
     implementation project(':ResourcefulBeesLikePlatform:PaperSpigot')
 

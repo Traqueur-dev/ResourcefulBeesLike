@@ -4,8 +4,8 @@ import fr.traqueur.resourcefulbees.api.events.BeeMoveEvent;
 import net.minecraft.world.entity.animal.Bee;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftBee;
+import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftBee;
 
 import java.util.ArrayList;
 import java.util.List;

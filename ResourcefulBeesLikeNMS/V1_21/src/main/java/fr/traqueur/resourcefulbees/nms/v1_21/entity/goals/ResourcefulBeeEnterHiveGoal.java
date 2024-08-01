@@ -14,10 +14,11 @@ public class ResourcefulBeeEnterHiveGoal extends ResourcefulBeeGoal {
         @Override
         public boolean canBeeUse() {
             if (this.bee.hasHive() && this.bee.wantsToEnterHive() && this.bee.hivePos.closerToCenterThan(this.bee.position(), 2.0D)) {
-                if (!this.bee.level().isLoadedAndInBounds(this.bee.hivePos)) return false; // Paper - Do not allow bees to load chunks for beehives
+                if (!this.isLoadedAndInBounds(this.bee.level(), this.bee.hivePos)) return false; // Paper - Do not allow bees to load chunks for beehives
                 BlockEntity tileentity = this.bee.level().getBlockEntity(this.bee.hivePos);
 
-                if (tileentity instanceof BeehiveBlockEntity tileentitybeehive) {
+                if (tileentity instanceof BeehiveBlockEntity) {
+                    BeehiveBlockEntity tileentitybeehive = (BeehiveBlockEntity) tileentity;
 
                     if (!tileentitybeehive.isFull()) {
                         return true;
@@ -37,7 +38,7 @@ public class ResourcefulBeeEnterHiveGoal extends ResourcefulBeeGoal {
 
         @Override
         public void start() {
-            if (!this.bee.level().isLoadedAndInBounds(this.bee.hivePos)) return; // Paper - Do not allow bees to load chunks for beehives
+            if (!this.isLoadedAndInBounds(this.bee.level(), this.bee.hivePos)) return;  // Paper - Do not allow bees to load chunks for beehives
             BlockEntity tileentity = this.bee.level().getBlockEntity(this.bee.hivePos);
 
             if (tileentity instanceof BeehiveBlockEntity tileentitybeehive) {
