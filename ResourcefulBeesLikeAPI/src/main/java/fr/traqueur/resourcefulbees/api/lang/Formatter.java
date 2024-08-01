@@ -3,7 +3,6 @@ package fr.traqueur.resourcefulbees.api.lang;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.function.Function;
 
@@ -39,6 +38,6 @@ public class Formatter {
     }
 
     public String handle(ResourcefulBeesLikeAPI api, String message) {
-        return message.replaceAll(StringEscapeUtils.escapeJava(this.pattern), String.valueOf(this.supplier.apply(api)));
+        return message.replaceAll(this.pattern, String.valueOf(this.supplier.apply(api)));
     }
 }

@@ -7,7 +7,6 @@ import fr.traqueur.resourcefulbees.api.managers.UpgradesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveCraft;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -82,7 +81,7 @@ public class CraftListener implements Listener {
         BeeType type = this.beeTypeManager.getBeeTypeById(customModelData);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setCustomModelData(customModelData);
-        meta.displayName(ComponentUtils.of(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class)
+        meta.setDisplayName(this.beehivesManager.getPlugin().reset(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class)
                 .translate(type.getType().toLowerCase() + "_honeycomb_block_name")));
         itemStack.setItemMeta(meta);
         event.getInventory().setResult(itemStack);

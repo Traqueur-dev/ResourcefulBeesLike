@@ -4,7 +4,6 @@ import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.MaterialPersistentDataType;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,7 +32,7 @@ public record ResourcefulBeeType(int id, String type, Material food) implements 
         ItemStack item = new ItemStack(Material.HONEYCOMB, amount);
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(this.id);
-        meta.displayName(ComponentUtils.of(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class).translate(this.type + "_honey_name")));
+        meta.setDisplayName(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class).reset(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class).translate(this.type + "_honey_name")));
         PersistentDataContainer container = meta.getPersistentDataContainer();
         if (type.equals("normal_bee")) {
             container.set(Keys.HONEY_PRODUCTION, MaterialPersistentDataType.INSTANCE, Material.AIR);

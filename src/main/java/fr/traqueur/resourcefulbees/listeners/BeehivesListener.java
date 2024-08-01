@@ -11,7 +11,6 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,8 +18,10 @@ import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -68,6 +69,9 @@ public class BeehivesListener implements Listener {
             return;
         }
 
+        event.setCancelled(true);
+        event.setDropItems(false);
+
         int honeyLevel = ((org.bukkit.block.data.type.Beehive) beehive.getBlockData()).getHoneyLevel();
 
         PersistentDataContainer itemContainer = blockStateMeta.getPersistentDataContainer();
@@ -75,11 +79,11 @@ public class BeehivesListener implements Listener {
         fr.traqueur.resourcefulbees.api.models.Beehive resourcefulBeehive = container.getOrDefault(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, new ResourcefulBeehive());
         itemContainer.set(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, resourcefulBeehive);
         itemContainer.set(Keys.HONEY_LEVEL, PersistentDataType.INTEGER, honeyLevel);
-        blockStateMeta.displayName(ComponentUtils.of(this.beehivesManager.getPlugin().translate(LangKeys.BEEHIVE_NAME, Formatter.upgrade(resourcefulBeehive.getUpgrade()))));
+        blockStateMeta.setDisplayName(this.beehivesManager.getPlugin().reset(this.beehivesManager.getPlugin().translate(LangKeys.BEEHIVE_NAME, Formatter.upgrade(resourcefulBeehive.getUpgrade()))));
         blockStateMeta.setBlockState(beehive);
         item.setItemMeta(blockStateMeta);
 
-        event.setDropItems(false);
+        block.setType(Material.AIR);
         block.getWorld().dropItemNaturally(block.getLocation(), item);
     }
 
@@ -109,22 +113,6 @@ public class BeehivesListener implements Listener {
         beehive.update();
     }
 
-
-    @EventHandler
-    public void onEnterBeehive(EntityEnterBlockEvent event) {
-        if(event.getEntity().getType() != EntityType.BEE) {
-            return;
-        }
-        Bee bee = (Bee) event.getEntity();
-        BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
-            if(!(event.getBlock().getState() instanceof Beehive beehive)) {
-                return;
-            }
-            this.beehivesManager.addBeeToHive(beehive, beeType);
-        });
-    }
-
     @EventHandler
     public void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
         if (event.getEntityType() != EntityType.BEE) {
@@ -133,8 +121,7 @@ public class BeehivesListener implements Listener {
         Block block = event.getBlock();
         Bee bee = (Bee) event.getEntity();
         BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
-
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
             if(!(block.getState() instanceof Beehive beehive)) {
                 return;
             }
@@ -148,6 +135,22 @@ public class BeehivesListener implements Listener {
             }
 
             this.beehivesManager.addHoneycombToBeehive(beehive, beeType);
+        }, 1L);
+    }
+
+
+    @EventHandler
+    public void onEnterBeehive(EntityEnterBlockEvent event) {
+        if(event.getEntity().getType() != EntityType.BEE) {
+            return;
+        }
+        Bee bee = (Bee) event.getEntity();
+        BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
+        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+            if(!(event.getBlock().getState() instanceof Beehive beehive)) {
+                return;
+            }
+            this.beehivesManager.addBeeToHive(beehive, beeType);
         });
     }
 
@@ -171,7 +174,7 @@ public class BeehivesListener implements Listener {
             }
             BeeType type = this.beehivesManager.removeBeeFromHive(beehive);
             BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type, bee.getLocation(),!bee.isAdult(), bee.hasNectar(), CreatureSpawnEvent.SpawnReason.BEEHIVE);
-            beeSpawnEvent.callEvent();
+            Bukkit.getPluginManager().callEvent(beeSpawnEvent);
             bee.remove();
         });
     }
@@ -181,15 +184,16 @@ public class BeehivesListener implements Listener {
         if(event.getClickedBlock() == null) {
             return;
         }
+
+        if(event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
         if(!(event.getClickedBlock().getState() instanceof Beehive beehive)) {
             return;
         }
 
-        if(event.getAction().isLeftClick()) {
-            return;
-        }
-
-        if(event.getHand() != EquipmentSlot.HAND) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
@@ -201,7 +205,8 @@ public class BeehivesListener implements Listener {
         if(beehiveData.getHoneyLevel() < beehiveData.getMaximumHoneyLevel()) {
             return;
         }
-        event.setCancelled(true);
+
+        event.setUseInteractedBlock(Event.Result.DENY);
 
         PersistentDataContainer container = beehive.getPersistentDataContainer();
         fr.traqueur.resourcefulbees.api.models.Beehive beehiveRessourceful = container.getOrDefault(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, new ResourcefulBeehive());

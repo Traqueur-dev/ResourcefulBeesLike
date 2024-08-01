@@ -8,26 +8,33 @@ import fr.traqueur.resourcefulbees.api.managers.*;
 import fr.traqueur.resourcefulbees.api.models.BeeTools;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
+import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
 import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
 import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
+import fr.traqueur.resourcefulbees.platform.spigot.SpigotUtils;
+import fr.traqueur.resourcefulbees.platform.paper.PaperUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 
 public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
+    private MessageUtils messageUtils;
     private CommandManager commandManager;
     private List<Saveable> saveables;
 
@@ -46,6 +53,8 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
     @Override
     public void onEnable() {
         new Metrics(this, 22825);
+
+        this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
 
         for (LangKeys value : LangKeys.values()) {
             this.registerLanguageKey(value);
@@ -141,6 +150,26 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         }
 
         this.languages.put(key, langConfig);
+    }
+
+    @Override
+    public void sendMessage(Player player, String message) {
+        this.messageUtils.sendMessage(player, message);
+    }
+
+    @Override
+    public void success(Player player, String s) {
+        this.messageUtils.success(player, s);
+    }
+
+    @Override
+    public void error(Player player, String s) {
+        this.messageUtils.error(player, s);
+    }
+
+    @Override
+    public String reset(String s) {
+        return this.messageUtils.reset(s);
     }
 
     @Override

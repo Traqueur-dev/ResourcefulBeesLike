@@ -4,7 +4,6 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 public class BeeBreedEvent extends Event implements Cancellable {
 
@@ -15,7 +14,7 @@ public class BeeBreedEvent extends Event implements Cancellable {
     }
 
     @Override
-    public @NotNull HandlerList getHandlers() {
+    public  HandlerList getHandlers() {
         return HANDLERS;
     }
 

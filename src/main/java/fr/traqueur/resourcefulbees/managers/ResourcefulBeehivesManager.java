@@ -11,6 +11,7 @@ import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.listeners.BeehivesListener;
 import fr.traqueur.resourcefulbees.listeners.CraftListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
+import fr.traqueur.resourcefulbees.platform.spigot.listeners.SpigotBeehivesUpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Beehive;
@@ -26,6 +27,10 @@ public class ResourcefulBeehivesManager implements BeehivesManager {
     public ResourcefulBeehivesManager(ResourcefulBeesLikePlugin plugin) {
         this.plugin = plugin;
         PluginManager pluginManager = plugin.getServer().getPluginManager();
+
+        if(!this.plugin.isPaperVersion()) {
+            Bukkit.getPluginManager().registerEvents(new SpigotBeehivesUpdateHandler(), plugin);
+        }
 
         Bukkit.getPluginManager().registerEvents(new CraftListener(this.plugin.getManager(BeeTypeManager.class),
                 this.plugin.getManager(UpgradesManager.class), this), plugin);

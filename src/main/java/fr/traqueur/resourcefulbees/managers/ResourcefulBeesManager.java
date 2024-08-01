@@ -12,8 +12,8 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
+import fr.traqueur.resourcefulbees.api.utils.ReflectionUtils;
 import fr.traqueur.resourcefulbees.listeners.BeeListener;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -25,6 +25,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.NoSuchElementException;
 
 public class ResourcefulBeesManager implements BeesManager {
 
@@ -48,22 +50,21 @@ public class ResourcefulBeesManager implements BeesManager {
         container.set(Keys.BEE, PersistentDataType.BOOLEAN, true);
         container.set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
         meta.setCustomModelData(type.getId());
-        meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.SPAWN_EGG_NAME, Formatter.beetype(type))));
+        meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.SPAWN_EGG_NAME, Formatter.beetype(type))));
         item.setItemMeta(meta);
         return item;
     }
 
     public BeeEntity generateBeeEntity(World world, ItemStack food) {
         String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-        String className = String.format("fr.traqueur.resourcefulbees.nms.%s.entity.ResourcefulBeeEntity", version);
-
+        String className = ReflectionUtils.ENTITY.getVersioned(version);
         try {
             Class<?> clazz = Class.forName(className);
             Constructor<?> constructor = clazz.getConstructor(World.class, ItemStack.class);
             return (BeeEntity) constructor.newInstance(world, food);
-        } catch (Exception exception) {
-            BeeLogger.severe("Cannot create a new instance for the class " + className);
-            BeeLogger.severe(exception.getMessage());
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                 InstantiationException e) {
+            BeeLogger.severe(e.getMessage());
         }
 
         return null;
@@ -80,7 +81,7 @@ public class ResourcefulBeesManager implements BeesManager {
         bee.getPersistentDataContainer().set(Keys.BEE_TYPE, BeeTypePersistentDataType.INSTANCE, type);
 
         if(!type.getType().equals("normal_bee")) {
-            bee.customName(ComponentUtils.of(this.plugin.translate(type.getType())));
+            bee.setCustomName(this.plugin.translate(type.getType()));
             bee.setCustomNameVisible(true);
         }
         if(baby) {

@@ -26,22 +26,16 @@ allprojects {
         mavenCentral()
         maven { url 'https://jitpack.io' }
         maven {
-            name = "papermc-repo"
             url = "https://repo.papermc.io/repository/maven-public/"
+        }
+        maven {
+            name = "spigotmc-repo"
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/groups/public/"
         }
-    }
-
-    dependencies {
-        compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
-    }
-
-
-    build {
-        dependsOn shadowJar
     }
 
     compileJava.options.encoding = 'UTF-8'
@@ -59,13 +53,19 @@ subprojects {
         destinationDirectory = rootProject.archiveFolder
     }
 }
-repositories {
-    mavenCentral()
-}
 
 dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT"
+
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
     implementation project(':ResourcefulBeesLikeAPI')
+
+    rootProject.subprojects.findAll { it.path.startsWith(':ResourcefulBeesLikeNMS:') }.each { subproject ->
+        implementation project(subproject.path)
+    }
+
+    implementation project(':ResourcefulBeesLikePlatform:Spigot')
+    implementation project(':ResourcefulBeesLikePlatform:PaperSpigot')
 
     implementation 'org.bstats:bstats-bukkit:3.0.0'
     implementation "com.github.Traqueur-dev:CommandsAPI:1.3.5"

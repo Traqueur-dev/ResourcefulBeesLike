@@ -1,0 +1,16 @@
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+group 'ResourcefulBeesLikePlatform:PaperSpigot'
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
+    compileOnly project(":ResourcefulBeesLikeAPI")
+}
+
+shadowJar {
+    archiveFileName = "${project.name}-exclude.jar"
+}

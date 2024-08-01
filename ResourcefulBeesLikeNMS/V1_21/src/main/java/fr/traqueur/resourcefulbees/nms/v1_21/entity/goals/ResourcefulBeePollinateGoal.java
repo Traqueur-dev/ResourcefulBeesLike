@@ -28,7 +28,7 @@ public class ResourcefulBeePollinateGoal extends ResourcefulBeeGoal {
             this.setFlags(EnumSet.of(Flag.MOVE));
             VALID_POLLINATION_BLOCKS = (iblockdata) -> (!iblockdata.hasProperty(BlockStateProperties.WATERLOGGED)
                     || !((Boolean) iblockdata.getValue(BlockStateProperties.WATERLOGGED)))
-                    &&  iblockdata.getBukkitMaterial() == bee.getFood().getType();
+                    &&  this.getBukkitMaterial(iblockdata) == bee.getFood().getType();
         }
         
         public boolean canBeeUse() {

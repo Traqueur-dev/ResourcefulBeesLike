@@ -15,7 +15,6 @@ import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveCraft;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveUpgrade;
-import fr.traqueur.resourcefulbees.utils.ComponentUtils;
 import fr.traqueur.resourcefulbees.utils.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,7 +60,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
         PersistentDataContainer itemContainer = meta.getPersistentDataContainer();
         fr.traqueur.resourcefulbees.api.models.Beehive resourcefulBeehive = new ResourcefulBeehive();
         resourcefulBeehive.setUpgrade(upgrade);
-        meta.displayName(ComponentUtils.of(this.plugin.translate(LangKeys.BEEHIVE_NAME, Formatter.upgrade(upgrade))));
+        meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.BEEHIVE_NAME, Formatter.upgrade(upgrade))));
         itemContainer.set(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, resourcefulBeehive);
         itemContainer.set(Keys.HONEY_LEVEL, PersistentDataType.INTEGER, 0);
         item.setItemMeta(meta);
