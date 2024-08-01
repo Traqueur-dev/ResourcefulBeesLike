@@ -12,6 +12,7 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
+import fr.traqueur.resourcefulbees.api.utils.ReflectionUtils;
 import fr.traqueur.resourcefulbees.listeners.BeeListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -56,26 +57,13 @@ public class ResourcefulBeesManager implements BeesManager {
 
     public BeeEntity generateBeeEntity(World world, ItemStack food) {
         String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-        String className = String.format("fr.traqueur.resourcefulbees.nms.%s.entity.ResourcefulBeeEntity", version);
-
+        String className = ReflectionUtils.ENTITY.getVersioned(version);
         try {
             Class<?> clazz = Class.forName(className);
             Constructor<?> constructor = clazz.getConstructor(World.class, ItemStack.class);
             return (BeeEntity) constructor.newInstance(world, food);
-        } catch (ClassNotFoundException e) {
-            BeeLogger.severe("Cannot find the class " + className);
-            BeeLogger.severe(e.getMessage());
-        } catch (NoSuchMethodException e) {
-            BeeLogger.severe("Cannot find the constructor for " + className);
-            BeeLogger.severe(e.getMessage());
-        } catch (IllegalAccessException e) {
-            BeeLogger.severe("IllegalAccessException");
-            BeeLogger.severe(e.getMessage());
-        } catch (InvocationTargetException e) {
-            BeeLogger.severe("InvocationTargetException");
-            BeeLogger.severe(e.getMessage());
-        } catch (InstantiationException e) {
-            BeeLogger.severe("Cannot instantiate " + className);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                 InstantiationException e) {
             BeeLogger.severe(e.getMessage());
         }
 

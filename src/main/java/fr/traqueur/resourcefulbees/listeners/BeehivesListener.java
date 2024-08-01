@@ -18,6 +18,7 @@ import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -68,6 +69,9 @@ public class BeehivesListener implements Listener {
             return;
         }
 
+        event.setCancelled(true);
+        event.setDropItems(false);
+
         int honeyLevel = ((org.bukkit.block.data.type.Beehive) beehive.getBlockData()).getHoneyLevel();
 
         PersistentDataContainer itemContainer = blockStateMeta.getPersistentDataContainer();
@@ -79,7 +83,7 @@ public class BeehivesListener implements Listener {
         blockStateMeta.setBlockState(beehive);
         item.setItemMeta(blockStateMeta);
 
-        event.setDropItems(false);
+        block.setType(Material.AIR);
         block.getWorld().dropItemNaturally(block.getLocation(), item);
     }
 
@@ -109,22 +113,6 @@ public class BeehivesListener implements Listener {
         beehive.update();
     }
 
-
-    @EventHandler
-    public void onEnterBeehive(EntityEnterBlockEvent event) {
-        if(event.getEntity().getType() != EntityType.BEE) {
-            return;
-        }
-        Bee bee = (Bee) event.getEntity();
-        BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
-            if(!(event.getBlock().getState() instanceof Beehive beehive)) {
-                return;
-            }
-            this.beehivesManager.addBeeToHive(beehive, beeType);
-        });
-    }
-
     @EventHandler
     public void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
         if (event.getEntityType() != EntityType.BEE) {
@@ -133,8 +121,7 @@ public class BeehivesListener implements Listener {
         Block block = event.getBlock();
         Bee bee = (Bee) event.getEntity();
         BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
-
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
             if(!(block.getState() instanceof Beehive beehive)) {
                 return;
             }
@@ -148,6 +135,22 @@ public class BeehivesListener implements Listener {
             }
 
             this.beehivesManager.addHoneycombToBeehive(beehive, beeType);
+        }, 1L);
+    }
+
+
+    @EventHandler
+    public void onEnterBeehive(EntityEnterBlockEvent event) {
+        if(event.getEntity().getType() != EntityType.BEE) {
+            return;
+        }
+        Bee bee = (Bee) event.getEntity();
+        BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
+        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+            if(!(event.getBlock().getState() instanceof Beehive beehive)) {
+                return;
+            }
+            this.beehivesManager.addBeeToHive(beehive, beeType);
         });
     }
 
@@ -181,15 +184,16 @@ public class BeehivesListener implements Listener {
         if(event.getClickedBlock() == null) {
             return;
         }
+
+        if(event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
         if(!(event.getClickedBlock().getState() instanceof Beehive beehive)) {
             return;
         }
 
-        if(event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) {
-            return;
-        }
-
-        if(event.getHand() != EquipmentSlot.HAND) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
@@ -201,7 +205,8 @@ public class BeehivesListener implements Listener {
         if(beehiveData.getHoneyLevel() < beehiveData.getMaximumHoneyLevel()) {
             return;
         }
-        event.setCancelled(true);
+
+        event.setUseInteractedBlock(Event.Result.DENY);
 
         PersistentDataContainer container = beehive.getPersistentDataContainer();
         fr.traqueur.resourcefulbees.api.models.Beehive beehiveRessourceful = container.getOrDefault(Keys.BEEHIVE, BeehivePersistentDataType.INSTANCE, new ResourcefulBeehive());
