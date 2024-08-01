@@ -45,8 +45,14 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
         NamespacedKey key = new NamespacedKey(this.plugin, "honeycomb_production");
         ShapelessRecipe recipe = new ShapelessRecipe(key, ingredient);
         recipe.addIngredient(new RecipeChoice.ExactChoice(ingredient));
-
         this.plugin.getServer().addRecipe(recipe);
+
+        NamespacedKey keyReverse = new NamespacedKey(this.plugin, "honeycomb_reverse");
+        ingredient.setAmount(4);
+        ShapelessRecipe recipeReverse = new ShapelessRecipe(keyReverse, ingredient);
+        recipeReverse.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.HONEYCOMB_BLOCK)));
+        this.plugin.getServer().addRecipe(recipeReverse);
+
     }
 
     public void registerBeeType(BeeType beeType) {

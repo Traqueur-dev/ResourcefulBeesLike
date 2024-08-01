@@ -27,4 +27,5 @@ public class ConfigKeys {
     public static final String CRAFT = "craft";
     public static final String PATTERN = "pattern";
     public static final String INGREDIENTS = "ingredients";
+    public static final String PRODUCE_BLOCKS = "produce_blocks";
 }

@@ -115,6 +115,37 @@ public class CraftListener implements Listener {
     }
 
     @EventHandler
+    public void onCraftHoneyReverser(PrepareItemCraftEvent event) {
+        Recipe recipe = event.getRecipe();
+        if (recipe == null) {
+            return;
+        }
+        ItemStack itemStack = recipe.getResult();
+        if (itemStack.getType() != Material.HONEYCOMB) {
+            return;
+        }
+
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        //check if matrix have single item and it's honeycomb_block
+        if (Arrays.stream(matrix).filter(Objects::nonNull).count() != 1) {
+            return;
+        }
+        int customModelData = Arrays.stream(matrix)
+                .filter(item -> item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData())
+                .mapToInt(item -> item.getItemMeta().getCustomModelData())
+                .findFirst()
+                .orElse(0);
+
+        if(customModelData == 0) {
+            return;
+        }
+
+        BeeType type = this.beeTypeManager.getBeeTypeById(customModelData);
+        itemStack = type.getHoney(4);
+        event.getInventory().setResult(itemStack);
+    }
+
+    @EventHandler
     public void onCraftBeehive(PrepareItemCraftEvent event) {
         Recipe recipe = event.getRecipe();
         if (recipe == null) {

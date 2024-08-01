@@ -1,6 +1,7 @@
 package fr.traqueur.resourcefulbees.listeners;
 
 import fr.traqueur.resourcefulbees.LangKeys;
+import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.BeehivePersistentDataType;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.events.BeeSpawnEvent;
@@ -33,6 +34,7 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -215,6 +217,13 @@ public class BeehivesListener implements Listener {
             int amount = (int) (value * multiplier);
             do {
                 ItemStack honey = key.getHoney(Math.min(amount, 64));
+                if(beehiveRessourceful.getUpgrade().produceBlocks()) {
+                    honey.setType(Material.HONEYCOMB_BLOCK);
+                    ItemMeta meta = honey.getItemMeta();
+                    meta.setDisplayName(this.beehivesManager.getPlugin().reset(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class)
+                            .translate(key.getType().toLowerCase() + "_honeycomb_block_name")));
+                    honey.setItemMeta(meta);
+                }
                 event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), honey);
                 amount -= honey.getAmount();
             } while (amount > 0);

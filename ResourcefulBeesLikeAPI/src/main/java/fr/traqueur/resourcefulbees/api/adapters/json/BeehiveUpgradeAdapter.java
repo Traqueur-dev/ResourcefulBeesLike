@@ -14,6 +14,7 @@ public class BeehiveUpgradeAdapter extends TypeAdapter<BeehiveUpgrade> {
     private final static String MULTIPLIER = "multiplier";
     private final static String REDUCER = "reducer";
     private final static String CRAFT = "craft";
+    private final static String PRODUCE_BLOCK = "produce_block";
 
     private final BeehiveCraftAdapter craftAdapter;
 
@@ -27,6 +28,7 @@ public class BeehiveUpgradeAdapter extends TypeAdapter<BeehiveUpgrade> {
         out.name(UPGRADE_LEVEL).value(value.getUpgradeLevel());
         out.name(MULTIPLIER).value(value.multiplierProduction());
         out.name(REDUCER).value(value.reducerTicks());
+        out.name(PRODUCE_BLOCK).value(value.produceBlocks());
         out.name(CRAFT);
         craftAdapter.write(out, value.getCraft());
         out.endObject();
@@ -37,6 +39,7 @@ public class BeehiveUpgradeAdapter extends TypeAdapter<BeehiveUpgrade> {
         in.beginObject();
         int level = 0;
         double multiplier = 0, reducer = 0;
+        boolean produceBlock = false;
         BeehiveCraft craft = null;
 
         while (in.hasNext()) {
@@ -53,16 +56,19 @@ public class BeehiveUpgradeAdapter extends TypeAdapter<BeehiveUpgrade> {
                 case CRAFT:
                     craft = craftAdapter.read(in);
                     break;
+                case PRODUCE_BLOCK:
+                    produceBlock = in.nextBoolean();
+                    break;
                 default:
                     in.skipValue(); // Skip unknown keys
                     break;
             }
         }
         in.endObject();
-        return new AdapterBeehiveUpgrade(level, multiplier, reducer, craft);
+        return new AdapterBeehiveUpgrade(level, multiplier, reducer, produceBlock, craft);
     }
 
-    private record AdapterBeehiveUpgrade(int level, double multiplier, double reducer, BeehiveCraft craft) implements BeehiveUpgrade {
+    private record AdapterBeehiveUpgrade(int level, double multiplier, double reducer, boolean produceBlock, BeehiveCraft craft) implements BeehiveUpgrade {
 
 
         @Override
@@ -79,6 +85,9 @@ public class BeehiveUpgradeAdapter extends TypeAdapter<BeehiveUpgrade> {
         public double reducerTicks() {
             return reducer;
         }
+
+        @Override
+        public boolean produceBlocks() { return produceBlock;}
 
         @Override
         public BeehiveCraft getCraft() {
