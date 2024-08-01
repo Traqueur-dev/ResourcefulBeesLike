@@ -38,10 +38,6 @@ allprojects {
         }
     }
 
-    build {
-        dependsOn shadowJar
-    }
-
     compileJava.options.encoding = 'UTF-8'
 
     tasks.withType(JavaCompile).tap {
@@ -50,23 +46,24 @@ allprojects {
         }
     }
 }
+
 subprojects {
     shadowJar {
         archiveFileName = "${project.name}.jar"
         destinationDirectory = rootProject.archiveFolder
     }
 }
-repositories {
-    maven {
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
-}
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
+    compileOnly "org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT"
 
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
     implementation project(':ResourcefulBeesLikeAPI')
+
+    rootProject.subprojects.findAll { it.path.startsWith(':ResourcefulBeesLikeNMS:') }.each { subproject ->
+        implementation project(subproject.path)
+    }
+
     implementation project(':ResourcefulBeesLikePlatform:Spigot')
     implementation project(':ResourcefulBeesLikePlatform:PaperSpigot')
 

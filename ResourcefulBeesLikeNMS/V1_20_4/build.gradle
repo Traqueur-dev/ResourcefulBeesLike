@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.7.1"
+    id("io.github.patrick.remapper") version "1.4.0"
 }
 
 java {
@@ -10,10 +10,13 @@ java {
 
 group 'ResourcefulBeesLikeNMS:v1_20_4'
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
-    paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:1.20.4-R0.1-SNAPSHOT")
-    compileOnly project(":ResourcefulBeesLikeAPI")
-    compileOnly rootProject
+    compileOnly("org.spigotmc:spigot:1.20.4-R0.1-SNAPSHOT:remapped-mojang")
+    compileOnly(project(":ResourcefulBeesLikeAPI"))
 }
 
 shadowJar {
@@ -21,12 +24,16 @@ shadowJar {
 }
 
 assemble {
-    dependsOn(reobfJar)
+    dependsOn(tasks.remap)
 }
 
-tasks {
-    reobfJar {
-        File outputFile = new File(rootProject.archiveFolder, "reobf/${project.name}.jar")
-        outputJar.set(layout.buildDirectory.file(outputFile.getPath()))
-    }
+tasks.remap {
+    version.set("1.20.4")
+}
+
+
+tasks.register("copyRemapOutput", Copy) {
+    mustRunAfter(tasks.remap)
+    from(tasks.remap.outputs)
+    into(layout.buildDirectory.dir("reobf"))
 }

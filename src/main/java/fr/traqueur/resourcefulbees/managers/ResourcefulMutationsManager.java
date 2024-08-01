@@ -11,10 +11,11 @@ import fr.traqueur.resourcefulbees.api.models.Mutation;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.utils.ReflectionUtils;
 import fr.traqueur.resourcefulbees.listeners.MutationsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulMutation;
-import fr.traqueur.resourcefulbees.platform.paper.PaperEntityMoveListener;
-import fr.traqueur.resourcefulbees.platform.spigot.SpigotEntityMoveListener;
+import fr.traqueur.resourcefulbees.platform.paper.listeners.PaperEntityMoveListener;
+import fr.traqueur.resourcefulbees.platform.spigot.listeners.SpigotEntityMoveListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,7 +45,7 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
             plugin.getServer().getPluginManager().registerEvents(new PaperEntityMoveListener(plugin, this), plugin);
         } else {
             String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-            String className = String.format("fr.traqueur.resourcefulbees.nms.%s.entity.tasks.MoveTask", version);
+            String className = ReflectionUtils.MOVE_TASK.getVersioned(version);
             try {
                 Class<?> clazz = Class.forName(className);
                 Constructor<?> constructor = clazz.getConstructor();
