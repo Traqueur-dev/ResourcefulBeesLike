@@ -46,6 +46,6 @@ public class BeeToolsGiveCommand extends Command<ResourcefulBeesLikePlugin> {
         }
 
         player.getInventory().addItem(tool);
-        this.getPlugin().sendMessage(player, this.manager.getPlugin().translate(key));
+        this.getPlugin().success(player, this.manager.getPlugin().translate(key));
     }
 }

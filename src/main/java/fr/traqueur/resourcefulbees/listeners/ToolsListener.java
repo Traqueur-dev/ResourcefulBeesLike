@@ -80,12 +80,12 @@ public class ToolsListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCatch(BeeCatchEvent event) {
         if(this.manager.isBeeBoxFull(event.getBeeCatcher())) {
-            this.manager.getPlugin().sendMessage(event.getPlayer(), this.manager.getPlugin().translate(LangKeys.BEE_BOX_FULL));
+            this.manager.getPlugin().error(event.getPlayer(), this.manager.getPlugin().translate(LangKeys.BEE_BOX_FULL));
             return;
         }
 
         if(this.manager.isBeeJarFull(event.getBeeCatcher())) {
-            this.manager.getPlugin().sendMessage(event.getPlayer(), this.manager.getPlugin().translate(LangKeys.BEE_JAR_FULL));
+            this.manager.getPlugin().error(event.getPlayer(), this.manager.getPlugin().translate(LangKeys.BEE_JAR_FULL));
             return;
         }
 
