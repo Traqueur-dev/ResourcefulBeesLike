@@ -3,6 +3,9 @@ package fr.traqueur.resourcefulbees.nms.v1_20_4.entity;
 import fr.traqueur.resourcefulbees.api.entity.BeeEntity;
 import fr.traqueur.resourcefulbees.nms.v1_20_4.entity.goals.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -20,9 +23,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 
 import java.util.List;
 
@@ -34,6 +39,7 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
     private final ResourcefulBeePollinateGoal pollinateGoal;
     private final ResourcefulBeeGoToHiveGoal goToHiveGoal;
 
+    public int ticksWithoutNectarSinceExitingHive;
     public int remainingCooldownBeforeLocatingNewFlower;
     public int remainingCooldownBeforeLocatingNewHive;
 
@@ -42,7 +48,7 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
         this.world = world;
         this.food = food;
         this.remainingCooldownBeforeLocatingNewFlower = Mth.nextInt(this.random, 20, 60);
-        Ingredient ingredient = Ingredient.of(ItemStack.fromBukkitCopy(food));
+        Ingredient ingredient = Ingredient.of(CraftItemStack.asNMSCopy(food));
         this.goToKnownFlowerGoal = new ResourcefulBeeGoToKnownFlowerGoal(this);
         this.pollinateGoal = new ResourcefulBeePollinateGoal(this);
         this.goToHiveGoal = new ResourcefulBeeGoToHiveGoal(this);
@@ -73,30 +79,19 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
 
     @Override
     public boolean isFood(ItemStack stack) {
-        return stack.asBukkitCopy().isSimilar(food);
+        return CraftItemStack.asCraftMirror(stack).isSimilar(food);
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
         if (!this.level().isClientSide) {
-            if (this.stayOutOfHiveCountdown > 0) {
-                --this.stayOutOfHiveCountdown;
-            }
-
             if (this.remainingCooldownBeforeLocatingNewHive > 0) {
                 --this.remainingCooldownBeforeLocatingNewHive;
             }
 
             if (this.remainingCooldownBeforeLocatingNewFlower > 0) {
                 --this.remainingCooldownBeforeLocatingNewFlower;
-            }
-
-            boolean flag = this.isAngry() && !this.hasStung() && this.getTarget() != null && this.getTarget().distanceToSqr((Entity) this) < 4.0D;
-
-            this.setRolling(flag);
-            if (this.tickCount % 20 == 0 && !this.isHiveValid()) {
-                this.hivePos = null;
             }
         }
     }
@@ -147,24 +142,47 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
         }
     }
 
-    public boolean isHiveValid() {
-        if (!this.hasHive()) {
-            return false;
-        } else if (!this.blockPosition().closerThan(this.hivePos, 32)) {
-            return false;
-        } else {
-            if (this.level().getChunkIfLoadedImmediately(this.hivePos.getX() >> 4, this.hivePos.getZ() >> 4) == null) return true; // Paper - just assume the hive is still there, no need to load the chunk(s)
-            BlockEntity tileentity = this.level().getBlockEntity(this.hivePos);
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        this.addAdditionalSaveData(nbttagcompound, true);
+    }
 
-            return tileentity != null && tileentity.getType() == BlockEntityType.BEEHIVE;
+    public void addAdditionalSaveData(CompoundTag nbttagcompound, boolean includeAll) {
+        super.addAdditionalSaveData(nbttagcompound, includeAll);
+        nbttagcompound.putInt("TicksSincePollination", this.ticksWithoutNectarSinceExitingHive);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
+        this.ticksWithoutNectarSinceExitingHive = nbt.getInt("TicksSincePollination");
+    }
+
+    private boolean isTiredOfLookingForNectar() {
+        return this.ticksWithoutNectarSinceExitingHive > 3600;
+    }
+
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        if (!this.hasNectar()) {
+            ++this.ticksWithoutNectarSinceExitingHive;
         }
+    }
+
+    public void resetTicksWithoutNectarSinceExitingHive() {
+        this.ticksWithoutNectarSinceExitingHive = 0;
+    }
+
+
+
+    public final boolean isLoadedAndInBounds(Level level, BlockPos blockposition) {
+        return level.getWorldBorder().isWithinBounds(blockposition) &&  ((ServerLevel) level).getChunkSource().getChunkNow(blockposition.getX() >> 4, blockposition.getZ() >> 4) != null;
     }
 
     private boolean isHiveNearFire() {
         if (this.hivePos == null) {
             return false;
         } else {
-            if (!this.level().isLoadedAndInBounds(this.hivePos)) return false;
+            if (!this.isLoadedAndInBounds(this.level(), this.hivePos)) return false;
             BlockEntity tileentity = this.level().getBlockEntity(this.hivePos);
 
             return tileentity instanceof BeehiveBlockEntity && ((BeehiveBlockEntity) tileentity).isFireNearby();
@@ -172,14 +190,18 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
     }
 
     public boolean doesHiveHaveSpace(BlockPos pos) {
-        if (!this.level().isLoadedAndInBounds(pos)) return false; // Paper - Do not allow bees to load chunks for beehives
+        if (!this.isLoadedAndInBounds(this.level(), pos)) return false; // Paper - Do not allow bees to load chunks for beehives
         BlockEntity tileentity = this.level().getBlockEntity(pos);
 
         return tileentity instanceof BeehiveBlockEntity && !((BeehiveBlockEntity) tileentity).isFull();
     }
 
     public boolean isFlowerValid(BlockPos pos) {
-        return this.level().isLoaded(pos) && this.level().getBlockState(pos).getBukkitMaterial() == food.getType();
+        return this.level().isLoaded(pos) && this.getBukkitMaterial(this.level().getBlockState(pos)) == food.getType();
+    }
+
+    public final org.bukkit.Material getBukkitMaterial(BlockState state) {;
+        return org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockType.minecraftToBukkit(state.getBlock());
     }
 
     public boolean wantsToEnterHive() {

@@ -4,6 +4,7 @@ import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
 public class PaperUtils implements MessageUtils {
@@ -25,6 +26,6 @@ public class PaperUtils implements MessageUtils {
 
     @Override
     public String reset(String s) {
-        return Component.text(s).decoration(TextDecoration.ITALIC, false).toString();
+        return LegacyComponentSerializer.legacySection().serialize(Component.text(s).decoration(TextDecoration.ITALIC, false));
     }
 }

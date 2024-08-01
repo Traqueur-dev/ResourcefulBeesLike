@@ -1,6 +1,7 @@
 package fr.traqueur.resourcefulbees.nms.v1_20_4.entity.tasks;
 
 import fr.traqueur.resourcefulbees.api.events.BeeMoveEvent;
+import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import net.minecraft.world.entity.animal.Bee;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
