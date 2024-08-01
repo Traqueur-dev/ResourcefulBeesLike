@@ -1,14 +1,13 @@
 package fr.traqueur.resourcefulbees.nms.v1_20_4.entity;
 
 import fr.traqueur.resourcefulbees.api.entity.BeeEntity;
+import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.nms.v1_20_4.entity.goals.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -22,9 +21,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
@@ -38,15 +37,17 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
     private final ResourcefulBeeGoToKnownFlowerGoal goToKnownFlowerGoal;
     private final ResourcefulBeePollinateGoal pollinateGoal;
     private final ResourcefulBeeGoToHiveGoal goToHiveGoal;
+    private final Material flowerType;
 
     public int ticksWithoutNectarSinceExitingHive;
     public int remainingCooldownBeforeLocatingNewFlower;
     public int remainingCooldownBeforeLocatingNewHive;
 
-    public ResourcefulBeeEntity(World world, org.bukkit.inventory.ItemStack food) {
+    public ResourcefulBeeEntity(World world, BeeType type) {
         super(EntityType.BEE, ((CraftWorld) world).getHandle());
         this.world = world;
-        this.food = food;
+        this.food = new org.bukkit.inventory.ItemStack(type.getFood());
+        this.flowerType = type.getFlower();
         this.remainingCooldownBeforeLocatingNewFlower = Mth.nextInt(this.random, 20, 60);
         Ingredient ingredient = Ingredient.of(CraftItemStack.asNMSCopy(food));
         this.goToKnownFlowerGoal = new ResourcefulBeeGoToKnownFlowerGoal(this);
@@ -197,7 +198,8 @@ public class ResourcefulBeeEntity extends Bee implements BeeEntity {
     }
 
     public boolean isFlowerValid(BlockPos pos) {
-        return this.level().isLoaded(pos) && this.getBukkitMaterial(this.level().getBlockState(pos)) == food.getType();
+        return this.level().isLoaded(pos) &&
+                this.getBukkitMaterial(this.level().getBlockState(pos)) == this.flowerType;
     }
 
     public final org.bukkit.Material getBukkitMaterial(BlockState state) {;

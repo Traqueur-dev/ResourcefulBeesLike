@@ -3,7 +3,6 @@ package fr.traqueur.resourcefulbees.api.events;
 import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.entity.Bee;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityEvent;

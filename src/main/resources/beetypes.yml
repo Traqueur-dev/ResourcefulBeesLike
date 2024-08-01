@@ -2,21 +2,28 @@ beetypes:
     - id: 0
       type: normal_bee
       food: POPPY
+      flower: POPPY
     - id: 1
       type: dirt_bee
       food: DIRT
+      flower: DIRT
     - id: 2
       type: sand_bee
       food: SAND
+      flower: SAND
     - id: 3
       type: gravel_bee
       food: GRAVEL
+      flower: GRAVEL
     - id: 4
       type: wood_bee
       food: OAK_WOOD
+      flower: OAK_WOOD
     - id: 5
       type: cobblestone_bee
       food: COBBLESTONE
+      flower: COBBLESTONE
     - id: 6
       type: andesite_bee
       food: ANDESITE
+      flower: ANDESITE

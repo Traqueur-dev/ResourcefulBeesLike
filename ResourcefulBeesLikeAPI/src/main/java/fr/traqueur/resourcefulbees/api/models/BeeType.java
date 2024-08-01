@@ -11,5 +11,7 @@ public interface BeeType {
 
     Material getFood();
 
+    Material getFlower();
+
     ItemStack getHoney(Integer amount);
 }

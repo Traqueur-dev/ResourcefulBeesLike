@@ -1,6 +1,5 @@
 package fr.traqueur.resourcefulbees.platform.spigot.listeners;
 
-import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Beehive;

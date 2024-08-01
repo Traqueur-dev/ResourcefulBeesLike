@@ -1,7 +1,5 @@
 package fr.traqueur.resourcefulbees.api.utils;
 
-import fr.traqueur.resourcefulbees.api.entity.BeeEntity;
-
 public enum ReflectionUtils {
 
     ENTITY("fr.traqueur.resourcefulbees.nms.%s.entity", "ResourcefulBeeEntity"),

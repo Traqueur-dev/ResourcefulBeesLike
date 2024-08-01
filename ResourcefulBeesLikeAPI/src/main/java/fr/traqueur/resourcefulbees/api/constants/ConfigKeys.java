@@ -13,6 +13,7 @@ public class ConfigKeys {
     public static final String CHILD = "child";
     public static final String CHANCE = "chance";
     public static final String FOOD = "food";
+    public static final String FLOWER = "flower";
     public static final String MUTATIONS = "mutations";
     public static final String PARENT = "parent";
     public static final String BLOCK = "block";

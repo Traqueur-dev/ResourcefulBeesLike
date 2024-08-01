@@ -14,5 +14,5 @@ public interface BeesManager extends Manager {
 
     void spawnBee(Location location, BeeType type, boolean baby, boolean nectar);
 
-    BeeEntity generateBeeEntity(World world, ItemStack food);
+    BeeEntity generateBeeEntity(World world, BeeType type);
 }
