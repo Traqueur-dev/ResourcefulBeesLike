@@ -167,7 +167,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
 
         boolean craftingEnable = config.getBoolean(ConfigKeys.CRAFTING_ENABLED);
         if (craftingEnable) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, this::setupRecipes, 2L);
+            this.getPlugin().getScheduler().runLater(this::setupRecipes, 2L);
         }
 
         BeeLogger.info("&aLoaded " + this.upgrades.size() + " upgrades.");

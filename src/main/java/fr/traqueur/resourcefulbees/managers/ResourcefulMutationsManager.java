@@ -49,7 +49,7 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
             try {
                 Class<?> clazz = Class.forName(className);
                 Constructor<?> constructor = clazz.getConstructor();
-                Bukkit.getScheduler().runTaskTimer(plugin, (Runnable) constructor.newInstance(), 0L, 1L);
+                this.plugin.getScheduler().runTimer((Runnable) constructor.newInstance(), 0L, 1L);
             } catch (Exception exception) {
                 BeeLogger.severe("Cannot create a new instance for the class " + className);
                 BeeLogger.severe(exception.getMessage());

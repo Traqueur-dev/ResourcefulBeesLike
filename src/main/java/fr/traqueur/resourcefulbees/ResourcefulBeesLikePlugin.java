@@ -52,6 +52,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
     @Override
     public void onEnable() {
+        super.onEnable();
         new Metrics(this, 22825);
 
         this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
@@ -82,7 +83,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
         commandManager.registerCommand(new BeeGiveCommand(this));
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+        this.getScheduler().runNextTick((task) -> {
             this.saveOrUpdateConfiguration("languages" + File.separator + "languages.yml", "languages" + File.separator + "languages.yml");
             YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "languages" + File.separator + "languages.yml"));
             langConfig.getMapList(ConfigKeys.LANGUAGE).forEach(map -> {
@@ -109,7 +110,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
            this.getManager(BeeTypeManager.class).setupRecipes();
 
-        }, 1L);
+        });
 
         BeeLogger.info("RessourcefulBees Plugin enabled successfully !");
     }

@@ -121,7 +121,7 @@ public class BeehivesListener implements Listener {
         Block block = event.getBlock();
         Bee bee = (Bee) event.getEntity();
         BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+        this.beehivesManager.getPlugin().getScheduler().runNextTick((task) -> {
             if(!(block.getState() instanceof Beehive beehive)) {
                 return;
             }
@@ -135,7 +135,7 @@ public class BeehivesListener implements Listener {
             }
 
             this.beehivesManager.addHoneycombToBeehive(beehive, beeType);
-        }, 1L);
+        });
     }
 
 
@@ -146,7 +146,7 @@ public class BeehivesListener implements Listener {
         }
         Bee bee = (Bee) event.getEntity();
         BeeType beeType = this.beeTypeManager.getBeeTypeFromBee(bee);
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+        this.beehivesManager.getPlugin().getScheduler().runNextTick((task) -> {
             if(!(event.getBlock().getState() instanceof Beehive beehive)) {
                 return;
             }
@@ -168,7 +168,7 @@ public class BeehivesListener implements Listener {
         }
         Block block = hiveLocation.getBlock();
 
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(ResourcefulBeesLikePlugin.class), () -> {
+        this.beehivesManager.getPlugin().getScheduler().runNextTick((task) -> {
             if(!(block.getState() instanceof Beehive beehive)) {
                 return;
             }

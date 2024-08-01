@@ -2,7 +2,15 @@ java {
     withSourcesJar()
 }
 
+repositories {
+    maven {
+        name = "devmart-other"
+        url = "https://nexuslite.gcnt.net/repos/other/"
+    }
+}
+
 dependencies {
+    compileOnly "com.tcoded:FoliaLib:0.3.4"
     compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
 }
 

@@ -1,5 +1,7 @@
 package fr.traqueur.resourcefulbees.api;
 
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.ServerImplementation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,6 +13,18 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public abstract class ResourcefulBeesLike extends JavaPlugin implements ResourcefulBeesLikeAPI {
+
+    private ServerImplementation scheduler;
+
+    @Override
+    public void onEnable() {
+        this.scheduler = new FoliaLib(this).getImpl();
+    }
+
+    @Override
+    public ServerImplementation getScheduler() {
+        return scheduler;
+    }
 
     public boolean isPaperVersion() {
         try {
