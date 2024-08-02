@@ -19,6 +19,7 @@ public enum LangKeys implements LangKey {
     ONLY_PLAYER("only_player"),
     MISSING_ARGS("missing_args"),
     ARG_NOT_RECOGNIZED("arg_not_recognized"),
+    REQUIREMENT_MESSAGE("requirement_message")
     ;
 
     private final String key;

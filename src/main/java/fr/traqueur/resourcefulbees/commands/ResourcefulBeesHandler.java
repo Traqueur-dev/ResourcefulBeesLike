@@ -1,6 +1,6 @@
 package fr.traqueur.resourcefulbees.commands;
 
-import fr.traqueur.commands.api.lang.MessageHandler;
+import fr.traqueur.commands.api.messages.MessageHandler;
 import fr.traqueur.resourcefulbees.LangKeys;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 
@@ -31,4 +31,7 @@ public class ResourcefulBeesHandler implements MessageHandler {
     public String getArgNotRecognized() {
         return api.translate(LangKeys.ARG_NOT_RECOGNIZED);
     }
+
+    @Override
+    public String getRequirementMessage() { return api.translate(LangKeys.REQUIREMENT_MESSAGE); }
 }
