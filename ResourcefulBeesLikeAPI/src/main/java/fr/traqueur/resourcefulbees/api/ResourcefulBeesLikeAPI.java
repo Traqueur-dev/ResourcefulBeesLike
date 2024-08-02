@@ -1,10 +1,13 @@
 package fr.traqueur.resourcefulbees.api;
 
+import com.tcoded.folialib.impl.ServerImplementation;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.lang.LangKey;
 import org.bukkit.entity.Player;
 
 public interface ResourcefulBeesLikeAPI {
+
+    ServerImplementation getScheduler();
 
     void sendMessage(Player player, String message);
 

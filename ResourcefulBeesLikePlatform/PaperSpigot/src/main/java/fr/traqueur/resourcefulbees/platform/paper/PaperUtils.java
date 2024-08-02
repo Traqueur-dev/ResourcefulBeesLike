@@ -26,6 +26,6 @@ public class PaperUtils implements MessageUtils {
 
     @Override
     public String reset(String s) {
-        return LegacyComponentSerializer.legacySection().serialize(Component.text(s).decoration(TextDecoration.ITALIC, false));
+        return "§r" + s;
     }
 }

@@ -1,11 +1,11 @@
 package fr.traqueur.resourcefulbees.listeners;
 
 import fr.traqueur.resourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
+import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BeesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
-import fr.traqueur.resourcefulbees.api.constants.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

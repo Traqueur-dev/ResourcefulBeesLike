@@ -52,6 +52,8 @@ public class BeeLogger {
         BeeLogger.log(Level.SEVERE, message);
     }
 
+    public static void warning(String message) {BeeLogger.log(Level.WARNING, message);}
+
     /**
      * Méthode pour enregistrer un message avec un niveau de gravité spécifié.
      * @param level Le niveau de gravité du message.

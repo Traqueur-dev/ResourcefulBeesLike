@@ -3,12 +3,12 @@ package fr.traqueur.resourcefulbees.managers;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
+import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.Saveable;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
-import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeeType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -45,8 +45,14 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
         NamespacedKey key = new NamespacedKey(this.plugin, "honeycomb_production");
         ShapelessRecipe recipe = new ShapelessRecipe(key, ingredient);
         recipe.addIngredient(new RecipeChoice.ExactChoice(ingredient));
-
         this.plugin.getServer().addRecipe(recipe);
+
+        NamespacedKey keyReverse = new NamespacedKey(this.plugin, "honeycomb_reverse");
+        ingredient.setAmount(4);
+        ShapelessRecipe recipeReverse = new ShapelessRecipe(keyReverse, ingredient);
+        recipeReverse.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.HONEYCOMB_BLOCK)));
+        this.plugin.getServer().addRecipe(recipeReverse);
+
     }
 
     public void registerBeeType(BeeType beeType) {
@@ -93,11 +99,12 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
             int id  = (int) map.get(ConfigKeys.ID);
             String type = (String) map.get(ConfigKeys.TYPE);
             Material food = Material.valueOf((String) map.get(ConfigKeys.FOOD));
-            this.registerBeeType(new ResourcefulBeeType(id,type, food));
+            Material flower = Material.valueOf((String) map.get(ConfigKeys.FLOWER));
+            this.registerBeeType(new ResourcefulBeeType(id,type, food, flower));
         });
 
         if(!this.beeTypes.containsKey("normal_bee")) {
-            this.registerBeeType(new ResourcefulBeeType(0,"normal_bee", Material.POPPY));
+            this.registerBeeType(new ResourcefulBeeType(0,"normal_bee", Material.POPPY, Material.POPPY));
         }
 
         BeeLogger.info("&aLoaded " + this.beeTypes.size() + " bee types.");
@@ -114,6 +121,7 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
                     map.put(ConfigKeys.ID, beetype.getId());
                     map.put(ConfigKeys.TYPE, beetype.getType());
                     map.put(ConfigKeys.FOOD, beetype.getFood().name());
+                    map.put(ConfigKeys.FLOWER, beetype.getFlower().name());
                     return map;
                 }).toList();
 

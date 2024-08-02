@@ -33,6 +33,6 @@ public class BeeTypeGiveCommand extends Command<ResourcefulBeesLikePlugin> {
 
         ItemStack beeSpawnEgg = this.manager.generateBeeSpawnEgg(name);
         player.getInventory().addItem(beeSpawnEgg);
-        this.getPlugin().sendMessage(player, this.manager.getPlugin().translate(LangKeys.BEE_GIVE, Formatter.beetype(name)));
+        this.getPlugin().success(player, this.manager.getPlugin().translate(LangKeys.BEE_GIVE, Formatter.beetype(name)));
     }
 }

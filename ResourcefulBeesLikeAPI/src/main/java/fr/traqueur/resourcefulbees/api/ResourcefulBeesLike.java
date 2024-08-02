@@ -12,15 +12,6 @@ import java.util.logging.Level;
 
 public abstract class ResourcefulBeesLike extends JavaPlugin implements ResourcefulBeesLikeAPI {
 
-    public boolean isPaperVersion() {
-        try {
-            Class.forName("net.kyori.adventure.text.Component");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
     public void saveOrUpdateConfiguration(String resourcePath, String toPath) {
         resourcePath = resourcePath.replace('\\', '/');
         File file = new File(getDataFolder(), toPath);

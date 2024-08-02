@@ -4,14 +4,14 @@ import fr.traqueur.resourcefulbees.LangKeys;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
+import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.entity.BeeEntity;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BeesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
-import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
+import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.utils.ReflectionUtils;
 import fr.traqueur.resourcefulbees.listeners.BeeListener;
 import org.bukkit.Location;
@@ -26,7 +26,6 @@ import org.bukkit.plugin.PluginManager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.NoSuchElementException;
 
 public class ResourcefulBeesManager implements BeesManager {
 
@@ -55,13 +54,12 @@ public class ResourcefulBeesManager implements BeesManager {
         return item;
     }
 
-    public BeeEntity generateBeeEntity(World world, ItemStack food) {
-        String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-        String className = ReflectionUtils.ENTITY.getVersioned(version);
+    public BeeEntity generateBeeEntity(World world, BeeType type) {
+        String className = ReflectionUtils.ENTITY.getVersioned(NmsVersion.getCurrentVersion());
         try {
             Class<?> clazz = Class.forName(className);
-            Constructor<?> constructor = clazz.getConstructor(World.class, ItemStack.class);
-            return (BeeEntity) constructor.newInstance(world, food);
+            Constructor<?> constructor = clazz.getConstructor(World.class, BeeType.class);
+            return (BeeEntity) constructor.newInstance(world, type);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  InstantiationException e) {
             BeeLogger.severe(e.getMessage());
@@ -72,7 +70,7 @@ public class ResourcefulBeesManager implements BeesManager {
 
     public void spawnBee(Location location, BeeType type, boolean baby, boolean nectar) {
 
-        BeeEntity resourcefulBeeEntity = this.generateBeeEntity(location.getWorld(), new ItemStack(type.getFood()));
+        BeeEntity resourcefulBeeEntity = this.generateBeeEntity(location.getWorld(), type);
         resourcefulBeeEntity.setPosition(location.getX(), location.getY() + 1, location.getZ());
         resourcefulBeeEntity.spawn();
         resourcefulBeeEntity.setStayOutOfHive(400);

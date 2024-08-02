@@ -8,6 +8,8 @@ public interface BeehiveUpgrade {
 
     double reducerTicks();
 
+    boolean produceBlocks();
+
     BeehiveCraft getCraft();
 
 }

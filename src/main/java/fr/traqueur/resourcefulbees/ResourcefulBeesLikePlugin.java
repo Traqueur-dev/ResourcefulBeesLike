@@ -1,38 +1,40 @@
 package fr.traqueur.resourcefulbees;
 
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.ServerImplementation;
 import fr.traqueur.commands.api.CommandManager;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLike;
+import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.lang.LangKey;
 import fr.traqueur.resourcefulbees.api.managers.*;
 import fr.traqueur.resourcefulbees.api.models.BeeTools;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
-import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
+import fr.traqueur.resourcefulbees.api.utils.Updater;
 import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
 import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
-import fr.traqueur.resourcefulbees.platform.spigot.SpigotUtils;
 import fr.traqueur.resourcefulbees.platform.paper.PaperUtils;
+import fr.traqueur.resourcefulbees.platform.spigot.SpigotUtils;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 
 public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
+
+    private ServerImplementation scheduler;
 
     private MessageUtils messageUtils;
     private CommandManager commandManager;
@@ -41,6 +43,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
     private Set<LangKey> langKeys;
     private HashMap<String, YamlConfiguration> languages;
     private String lang;
+
     @Override
     public void onLoad() {
         this.commandManager = new CommandManager(this);
@@ -48,13 +51,17 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         this.saveables = new ArrayList<>();
         this.languages = new HashMap<>();
         this.langKeys = new HashSet<>();
+        this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
+        this.scheduler = new FoliaLib(this).getImpl();
     }
 
     @Override
     public void onEnable() {
-        new Metrics(this, 22825);
+        super.onEnable();
 
-        this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
+        Updater.checkUpdates();
+
+        new Metrics(this, 22825);
 
         for (LangKeys value : LangKeys.values()) {
             this.registerLanguageKey(value);
@@ -82,7 +89,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
         commandManager.registerCommand(new BeeGiveCommand(this));
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+        this.getScheduler().runNextTick((task) -> {
             this.saveOrUpdateConfiguration("languages" + File.separator + "languages.yml", "languages" + File.separator + "languages.yml");
             YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "languages" + File.separator + "languages.yml"));
             langConfig.getMapList(ConfigKeys.LANGUAGE).forEach(map -> {
@@ -109,7 +116,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
            this.getManager(BeeTypeManager.class).setupRecipes();
 
-        }, 1L);
+        });
 
         BeeLogger.info("RessourcefulBees Plugin enabled successfully !");
     }
@@ -118,6 +125,11 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
     public void onDisable() {
         this.saveables.forEach(Saveable::saveData);
         this.getServer().clearRecipes();
+    }
+
+    @Override
+    public ServerImplementation getScheduler() {
+        return scheduler;
     }
 
     @Override
@@ -190,5 +202,15 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
             message = formatter.handle(this, message);
         }
         return message;
+    }
+
+    @Override
+    public boolean isPaperVersion() {
+        try {
+            Class.forName("net.kyori.adventure.text.Component");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

@@ -4,19 +4,18 @@ import fr.traqueur.resourcefulbees.LangKeys;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.BeehivePersistentDataType;
+import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.managers.Saveable;
 import fr.traqueur.resourcefulbees.api.managers.UpgradesManager;
 import fr.traqueur.resourcefulbees.api.models.BeehiveCraft;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
-import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehive;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveCraft;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveUpgrade;
 import fr.traqueur.resourcefulbees.utils.NumberUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -145,17 +144,18 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
             int level  = (int) map.get(ConfigKeys.UPGRADE_LEVEL);
             double reducer  = NumberUtils.castDouble(map.get(ConfigKeys.REDUCER));
             double multiplier = NumberUtils.castDouble(map.get(ConfigKeys.MULTIPLIER));
+            boolean produceBlocks = (boolean) map.get(ConfigKeys.PRODUCE_BLOCKS);
 
             Map<String, Object> craftMap = (Map<String, Object>) map.get(ConfigKeys.CRAFT);
             String[] pattern = ((List<String>) craftMap.get(ConfigKeys.PATTERN)).toArray(new String[0]);
             Map<String, String> ingredients = (Map<String, String>) craftMap.get(ConfigKeys.INGREDIENTS);
 
             ResourcefulBeehiveCraft craft = new ResourcefulBeehiveCraft(pattern, ingredients);
-            this.registerUpgrade(new ResourcefulBeehiveUpgrade(level, multiplier, reducer, craft));
+            this.registerUpgrade(new ResourcefulBeehiveUpgrade(level, multiplier, reducer, produceBlocks, craft));
         });
 
         if(!this.upgrades.containsKey(1)) {
-            this.registerUpgrade(new ResourcefulBeehiveUpgrade(1,1,1, new ResourcefulBeehiveCraft(new String[] {
+            this.registerUpgrade(new ResourcefulBeehiveUpgrade(1,1,1, false,new ResourcefulBeehiveCraft(new String[] {
                     "XXX",
                     "XOX",
                     "XXX"
@@ -167,7 +167,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
 
         boolean craftingEnable = config.getBoolean(ConfigKeys.CRAFTING_ENABLED);
         if (craftingEnable) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, this::setupRecipes, 2L);
+            this.getPlugin().getScheduler().runLater(this::setupRecipes, 2L);
         }
 
         BeeLogger.info("&aLoaded " + this.upgrades.size() + " upgrades.");
@@ -184,6 +184,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
                     map.put(ConfigKeys.UPGRADE_LEVEL, upgrade.getUpgradeLevel());
                     map.put(ConfigKeys.MULTIPLIER, upgrade.multiplierProduction());
                     map.put(ConfigKeys.REDUCER, upgrade.reducerTicks());
+                    map.put(ConfigKeys.PRODUCE_BLOCKS, upgrade.produceBlocks());
 
                     BeehiveCraft craft = upgrade.getCraft();
                     Map<String, Object> craftMap = new HashMap<>();

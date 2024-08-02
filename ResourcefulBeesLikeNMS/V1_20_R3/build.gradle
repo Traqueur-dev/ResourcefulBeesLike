@@ -1,0 +1,39 @@
+plugins {
+    id("io.github.patrick.remapper") version "1.4.0"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+group 'ResourcefulBeesLikeNMS:v1_20_R3'
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    compileOnly("org.spigotmc:spigot:1.20.4-R0.1-SNAPSHOT:remapped-mojang")
+    compileOnly(project(":ResourcefulBeesLikeAPI"))
+}
+
+shadowJar {
+    archiveFileName = "${project.name}-exclude.jar"
+}
+
+assemble {
+    dependsOn(tasks.remap)
+}
+
+tasks.remap {
+    version.set("1.20.4")
+}
+
+
+tasks.register("copyRemapOutput", Copy) {
+    mustRunAfter(tasks.remap)
+    from(tasks.remap.outputs)
+    into(layout.buildDirectory.dir("reobf"))
+}

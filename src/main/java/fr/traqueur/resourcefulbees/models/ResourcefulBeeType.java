@@ -2,15 +2,21 @@ package fr.traqueur.resourcefulbees.models;
 
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.MaterialPersistentDataType;
-import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
+import fr.traqueur.resourcefulbees.api.models.BeeType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public record ResourcefulBeeType(int id, String type, Material food) implements BeeType {
+public record ResourcefulBeeType(int id, String type, Material food, Material flower) implements BeeType {
+
+    public ResourcefulBeeType {
+        if (!flower.isBlock()) {
+            throw new IllegalArgumentException("Flower must be a block");
+        }
+    }
 
     @Override
     public int getId() {
@@ -25,6 +31,11 @@ public record ResourcefulBeeType(int id, String type, Material food) implements 
     @Override
     public Material getFood() {
         return this.food;
+    }
+
+    @Override
+    public Material getFlower() {
+        return this.flower;
     }
 
     @Override

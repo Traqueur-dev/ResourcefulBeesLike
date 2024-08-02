@@ -2,6 +2,7 @@ package fr.traqueur.resourcefulbees.managers;
 
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
+import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BeesManager;
 import fr.traqueur.resourcefulbees.api.managers.MutationsManager;
@@ -10,13 +11,11 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.Mutation;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.utils.ReflectionUtils;
 import fr.traqueur.resourcefulbees.listeners.MutationsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulMutation;
 import fr.traqueur.resourcefulbees.platform.paper.listeners.PaperEntityMoveListener;
 import fr.traqueur.resourcefulbees.platform.spigot.listeners.SpigotEntityMoveListener;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,12 +43,11 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
         if(plugin.isPaperVersion()) {
             plugin.getServer().getPluginManager().registerEvents(new PaperEntityMoveListener(plugin, this), plugin);
         } else {
-            String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-            String className = ReflectionUtils.MOVE_TASK.getVersioned(version);
+            String className = ReflectionUtils.MOVE_TASK.getVersioned(NmsVersion.getCurrentVersion());
             try {
                 Class<?> clazz = Class.forName(className);
                 Constructor<?> constructor = clazz.getConstructor();
-                Bukkit.getScheduler().runTaskTimer(plugin, (Runnable) constructor.newInstance(), 0L, 1L);
+                this.plugin.getScheduler().runTimer((Runnable) constructor.newInstance(), 0L, 1L);
             } catch (Exception exception) {
                 BeeLogger.severe("Cannot create a new instance for the class " + className);
                 BeeLogger.severe(exception.getMessage());
