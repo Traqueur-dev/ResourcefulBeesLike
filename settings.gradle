@@ -9,4 +9,5 @@ include 'ResourcefulBeesLikeNMS:V1_20_R4'
 include 'ResourcefulBeesLikePlatform'
 include 'ResourcefulBeesLikePlatform:Spigot'
 include 'ResourcefulBeesLikePlatform:PaperSpigot'
+include 'ResourcefulBeesLikeNMS:V1_20_R1'
 
