@@ -43,8 +43,7 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
         if(plugin.isPaperVersion()) {
             plugin.getServer().getPluginManager().registerEvents(new PaperEntityMoveListener(plugin, this), plugin);
         } else {
-            String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-            String className = ReflectionUtils.MOVE_TASK.getVersioned(version);
+            String className = ReflectionUtils.MOVE_TASK.getVersioned(NmsVersion.getCurrentVersion());
             try {
                 Class<?> clazz = Class.forName(className);
                 Constructor<?> constructor = clazz.getConstructor();

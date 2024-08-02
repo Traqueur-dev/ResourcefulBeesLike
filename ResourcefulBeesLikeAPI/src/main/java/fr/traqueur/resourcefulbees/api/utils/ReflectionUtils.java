@@ -1,5 +1,7 @@
 package fr.traqueur.resourcefulbees.api.utils;
 
+import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
+
 public enum ReflectionUtils {
 
     ENTITY("fr.traqueur.resourcefulbees.nms.%s.entity", "ResourcefulBeeEntity"),
@@ -14,8 +16,8 @@ public enum ReflectionUtils {
         this.className = className;
     }
 
-    public String getVersioned(String version) {
-        return String.format(this.packageName, version) + "." + this.className;
+    public String getVersioned(NmsVersion version) {
+        return String.format(this.packageName, "v" + version.getNMSVersion()) + "." + this.className;
     }
 
 }

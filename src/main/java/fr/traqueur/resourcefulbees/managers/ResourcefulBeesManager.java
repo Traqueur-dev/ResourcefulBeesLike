@@ -55,8 +55,7 @@ public class ResourcefulBeesManager implements BeesManager {
     }
 
     public BeeEntity generateBeeEntity(World world, BeeType type) {
-        String version = NmsVersion.getCurrentVersion().name().replace("V_", "v");
-        String className = ReflectionUtils.ENTITY.getVersioned(version);
+        String className = ReflectionUtils.ENTITY.getVersioned(NmsVersion.getCurrentVersion());
         try {
             Class<?> clazz = Class.forName(className);
             Constructor<?> constructor = clazz.getConstructor(World.class, BeeType.class);
