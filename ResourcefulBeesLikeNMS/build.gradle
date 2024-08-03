@@ -1,1 +1,40 @@
+plugins {
+    id("io.github.patrick.remapper") version "1.4.0"
+}
+
 group 'ResourcefulBeesLikeNMS'
+
+subprojects {
+
+    apply {
+        plugin("io.github.patrick.remapper")
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+
+    dependencies {
+        compileOnly(project(":ResourcefulBeesLikeAPI"))
+    }
+
+    shadowJar {
+        archiveFileName = "${project.name}-exclude.jar"
+    }
+
+    assemble {
+        dependsOn(tasks.remap)
+    }
+
+    tasks.register("copyRemapOutput", Copy) {
+        mustRunAfter(tasks.remap)
+        from(tasks.remap.outputs)
+        into(layout.buildDirectory.dir("reobf"))
+    }
+}
