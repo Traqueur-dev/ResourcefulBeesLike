@@ -84,11 +84,6 @@ public class BeeListener implements Listener {
         Bukkit.getPluginManager().callEvent(beeSpawnEvent);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onSpawnBee(BeeSpawnEvent event) {
-        this.manager.spawnBee(event.getLocation(), event.getType(), event.isBaby(), event.hasNectar());
-    }
-
     @EventHandler
     public void onLoad(EntitiesLoadEvent event) {
         List<Bee> bees = event.getEntities().stream()
@@ -110,7 +105,27 @@ public class BeeListener implements Listener {
         }
     }
 
-    /*@EventHandler
+    @EventHandler
+    public void onLoadNatural(EntitiesLoadEvent event) {
+        List<Bee> bees = event.getEntities().stream()
+                .filter(entity -> entity.getType() == EntityType.BEE)
+                .map(entity -> (Bee) entity)
+                .filter(bee -> !bee.getPersistentDataContainer().has(Keys.BEE))
+                .toList();
+
+        Iterator<Bee> iterator = bees.iterator();
+        while(iterator.hasNext()) {
+            Bee bee = iterator.next();
+            Location location = bee.getLocation();
+            BeeType type = this.beeTypeManager.getNaturalType();
+
+            BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type, location, !bee.isAdult(), bee.hasNectar(), CreatureSpawnEvent.SpawnReason.NATURAL);
+            Bukkit.getPluginManager().callEvent(beeSpawnEvent);
+            bee.remove();
+        }
+    }
+
+    @EventHandler
     public void onNaturalSpawn(CreatureSpawnEvent event) {
         if(event.getEntityType() != EntityType.BEE) {
             return;
@@ -123,6 +138,11 @@ public class BeeListener implements Listener {
         BeeType type = this.beeTypeManager.getNaturalType();
         BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type, event.getLocation(), !bee.isAdult(), bee.hasNectar(), event.getSpawnReason());
         Bukkit.getPluginManager().callEvent(beeSpawnEvent);
-    }**/
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onSpawnBee(BeeSpawnEvent event) {
+        this.manager.spawnBee(event.getLocation(), event.getType(), event.isBaby(), event.hasNectar());
+    }
 
 }

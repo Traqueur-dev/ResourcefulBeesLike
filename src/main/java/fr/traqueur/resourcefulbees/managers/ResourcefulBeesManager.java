@@ -72,7 +72,6 @@ public class ResourcefulBeesManager implements BeesManager {
 
         BeeEntity resourcefulBeeEntity = this.generateBeeEntity(location.getWorld(), type);
         resourcefulBeeEntity.setPosition(location.getX(), location.getY() + 1, location.getZ());
-        resourcefulBeeEntity.spawn();
         resourcefulBeeEntity.setStayOutOfHive(400);
         Bee bee = resourcefulBeeEntity.getSpigotEntity();
         bee.getPersistentDataContainer().set(Keys.BEE, PersistentDataType.BOOLEAN, true);
@@ -86,6 +85,7 @@ public class ResourcefulBeesManager implements BeesManager {
             bee.setBaby();
         }
         bee.setHasNectar(nectar);
+        resourcefulBeeEntity.spawn();
     }
 
     @Override
