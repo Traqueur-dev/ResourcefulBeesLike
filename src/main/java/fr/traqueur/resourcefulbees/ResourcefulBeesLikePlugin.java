@@ -23,8 +23,10 @@ import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
 import fr.traqueur.resourcefulbees.api.utils.Updater;
 import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
+import fr.traqueur.resourcefulbees.commands.BeeSummonCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
 import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
+import fr.traqueur.resourcefulbees.commands.arguments.BooleanArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
@@ -77,6 +79,8 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
             this.registerLanguageKey(value);
         }
 
+        this.commandManager.registerConverter(Boolean.class, "boolean", new BooleanArgument());
+
         this.registerManager(new ResourcefulBeeTypeManager(this), BeeTypeManager.class);
         this.commandManager.registerConverter(BeeType.class, "beetype", new BeeTypeArgument(this.getManager(BeeTypeManager.class)));
 
@@ -96,6 +100,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
             saveable.loadData();
         });
 
+        commandManager.registerCommand(new BeeSummonCommand(this));
         commandManager.registerCommand(new BeeGiveCommand(this));
 
         this.getScheduler().runNextTick((task) -> {

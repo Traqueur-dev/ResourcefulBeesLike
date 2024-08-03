@@ -29,6 +29,7 @@ upgrade_1_name: "Tier 1"
 
 bee_give_beehive: "You have received a Beehive &upgrade& !"
 bee_give: "You have received a &beetype& !"
+bee_summon: "You have summoned a &beetype& !"
 bee_jar_give: "You have received a Bee Jar !"
 bee_box_full: "Bee Box is full."
 bee_jar_full: "Bee Jar is full."
