@@ -6,6 +6,7 @@ import fr.traqueur.resourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BeesManager;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
+import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -108,5 +109,20 @@ public class BeeListener implements Listener {
             bee.remove();
         }
     }
+
+    /*@EventHandler
+    public void onNaturalSpawn(CreatureSpawnEvent event) {
+        if(event.getEntityType() != EntityType.BEE) {
+            return;
+        }
+        Bee bee = (Bee) event.getEntity();
+        if(bee.getPersistentDataContainer().has(Keys.BEE)) {
+            return;
+        }
+        event.setCancelled(true);
+        BeeType type = this.beeTypeManager.getNaturalType();
+        BeeSpawnEvent beeSpawnEvent = new BeeSpawnEvent(type, event.getLocation(), !bee.isAdult(), bee.hasNectar(), event.getSpawnReason());
+        Bukkit.getPluginManager().callEvent(beeSpawnEvent);
+    }**/
 
 }

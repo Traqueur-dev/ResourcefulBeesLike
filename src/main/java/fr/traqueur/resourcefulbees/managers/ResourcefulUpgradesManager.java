@@ -1,5 +1,6 @@
 package fr.traqueur.resourcefulbees.managers;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import fr.traqueur.resourcefulbees.LangKeys;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
@@ -7,7 +8,7 @@ import fr.traqueur.resourcefulbees.api.adapters.persistents.BeehivePersistentDat
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
-import fr.traqueur.resourcefulbees.api.managers.Saveable;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.managers.UpgradesManager;
 import fr.traqueur.resourcefulbees.api.models.BeehiveCraft;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
@@ -18,14 +19,12 @@ import fr.traqueur.resourcefulbees.models.ResourcefulBeehiveUpgrade;
 import fr.traqueur.resourcefulbees.utils.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -138,7 +137,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
 
     @Override
     public void loadData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         config.getMapList(ConfigKeys.UPGRADES).forEach(map -> {
             int level  = (int) map.get(ConfigKeys.UPGRADE_LEVEL);
@@ -175,7 +174,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
 
     @Override
     public void saveData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         List<Map<String, Object>> upgrades = this.upgrades.values()
                 .stream()
@@ -196,7 +195,7 @@ public class ResourcefulUpgradesManager implements UpgradesManager, Saveable {
 
         config.set(ConfigKeys.UPGRADES, upgrades);
         try {
-            config.save(new File(this.plugin.getDataFolder(), this.getFile()));
+            config.save();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

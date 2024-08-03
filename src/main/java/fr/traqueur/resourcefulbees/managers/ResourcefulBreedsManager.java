@@ -1,19 +1,18 @@
 package fr.traqueur.resourcefulbees.managers;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BreedsManager;
-import fr.traqueur.resourcefulbees.api.managers.Saveable;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.Breed;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.listeners.BreedsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBreed;
-import org.bukkit.configuration.file.FileConfiguration;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
@@ -70,7 +69,7 @@ public class ResourcefulBreedsManager implements BreedsManager, Saveable {
 
     @Override
     public void loadData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         config.getMapList(ConfigKeys.BREEDS).forEach(map -> {
             String parents = (String) map.get(ConfigKeys.PARENTS);
@@ -85,7 +84,7 @@ public class ResourcefulBreedsManager implements BreedsManager, Saveable {
 
     @Override
     public void saveData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         List<Map<String, Object>> breeds = this.breeds
                 .stream()
@@ -99,7 +98,7 @@ public class ResourcefulBreedsManager implements BreedsManager, Saveable {
 
         config.set(ConfigKeys.BREEDS, breeds);
         try {
-            config.save(new File(this.plugin.getDataFolder(), this.getFile()));
+            config.save();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

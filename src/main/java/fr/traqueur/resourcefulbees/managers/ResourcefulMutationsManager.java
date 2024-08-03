@@ -1,12 +1,13 @@
 package fr.traqueur.resourcefulbees.managers;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
 import fr.traqueur.resourcefulbees.api.managers.BeesManager;
 import fr.traqueur.resourcefulbees.api.managers.MutationsManager;
-import fr.traqueur.resourcefulbees.api.managers.Saveable;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.Mutation;
 import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
@@ -18,10 +19,8 @@ import fr.traqueur.resourcefulbees.platform.paper.listeners.PaperEntityMoveListe
 import fr.traqueur.resourcefulbees.platform.spigot.listeners.SpigotEntityMoveListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -109,7 +108,7 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
 
     @Override
     public void loadData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         for (Map<?, ?> map : config.getMapList(ConfigKeys.MUTATIONS)) {
             BeeType parent = this.beeTypeManager.getBeeType(((String) map.get(ConfigKeys.PARENT)));
@@ -129,7 +128,7 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
 
     @Override
     public void saveData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         List<Map<String, Object>> mutations = this.mutations.values().stream()
                 .flatMap(mutationsSet -> mutationsSet.stream()
@@ -143,7 +142,7 @@ public class ResourcefulMutationsManager implements MutationsManager, Saveable {
 
         config.set(ConfigKeys.MUTATIONS, mutations);
         try {
-            config.save(new File(this.plugin.getDataFolder(), this.getFile()));
+            config.save();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

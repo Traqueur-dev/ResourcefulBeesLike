@@ -1,3 +1,5 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${beetypes_config_version}
 beetypes:
     - id: 0
       type: normal_bee
@@ -27,3 +29,9 @@ beetypes:
       type: andesite_bee
       food: ANDESITE
       flower: ANDESITE
+natural_spawning:
+  - normal_bee: 20
+  - dirt_bee: 20
+  - sand_bee: 20
+  - gravel_bee: 20
+  - cobblestone_bee: 20

@@ -1,3 +1,6 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${lang_config_version}
+
 sand_bee: "Sand Bee"
 cobblestone_bee: "Cobblestone Bee"
 gravel_bee: "Gravel Bee"

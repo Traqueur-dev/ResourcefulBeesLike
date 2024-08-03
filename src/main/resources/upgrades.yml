@@ -1,3 +1,5 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${upgrades_config_version}
 crafting_enabled: true
 upgrades:
   - multiplier: 1.0

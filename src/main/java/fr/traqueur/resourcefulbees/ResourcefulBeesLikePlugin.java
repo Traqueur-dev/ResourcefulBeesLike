@@ -2,9 +2,17 @@ package fr.traqueur.resourcefulbees;
 
 import com.tcoded.folialib.FoliaLib;
 import com.tcoded.folialib.impl.ServerImplementation;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import fr.traqueur.commands.api.CommandManager;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLike;
+import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.lang.LangKey;
 import fr.traqueur.resourcefulbees.api.managers.*;
@@ -27,8 +35,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -41,7 +51,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
     private List<Saveable> saveables;
 
     private Set<LangKey> langKeys;
-    private HashMap<String, YamlConfiguration> languages;
+    private HashMap<String, YamlDocument> languages;
     private String lang;
 
     @Override
@@ -82,7 +92,6 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         this.registerManager(new ResourcefulBeehivesManager(this), BeehivesManager.class);
 
         this.saveables.forEach(saveable -> {
-            this.saveOrUpdateConfiguration(saveable.getFile(), saveable.getFile());
             BeeLogger.info("&eLoaded " + saveable.getClass().getSimpleName() + " config file: " + saveable.getFile() + ".");
             saveable.loadData();
         });
@@ -90,8 +99,18 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         commandManager.registerCommand(new BeeGiveCommand(this));
 
         this.getScheduler().runNextTick((task) -> {
-            this.saveOrUpdateConfiguration("languages" + File.separator + "languages.yml", "languages" + File.separator + "languages.yml");
-            YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "languages" + File.separator + "languages.yml"));
+            YamlDocument langConfig;
+            try {
+                langConfig = YamlDocument.create(new File(this.getDataFolder(), "languages/languages.yml"),
+                        Objects.requireNonNull(this.getResource("languages/languages.yml")),
+                        GeneralSettings.DEFAULT,
+                        LoaderSettings.builder().setAutoUpdate(true).build(),
+                        DumperSettings.DEFAULT,
+                        UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+                langConfig.save();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             langConfig.getMapList(ConfigKeys.LANGUAGE).forEach(map -> {
                 String key = (String) map.keySet().iterator().next();
                 String path = (String) map.get(key);
@@ -100,7 +119,6 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
                 } catch (NoSuchElementException e) {
                     BeeLogger.severe("&c" + e.getMessage());
                 }
-
             });
             BeeLogger.info("&aLoaded languages files. (" + this.languages.size() + " languages)");
             if(this.languages.isEmpty()) {
@@ -153,8 +171,14 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
     @Override
     public void registerLanguage(String key, String path) {
-        this.saveOrUpdateConfiguration("languages" + File.separator + path, "languages" + File.separator + path);
-        YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "languages" + File.separator + path));
+        YamlDocument langConfig;
+        try {
+            langConfig = YamlDocument.create(new File(this.getDataFolder(), "languages/" +  path),
+                    Objects.requireNonNull(this.getResource("languages/" + path)), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            langConfig.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         for (LangKey value : this.langKeys) {
             if(!langConfig.contains(value.getKey())) {
                 throw new NoSuchElementException("The language file " + path + " does not contain the key " + value.getKey() + ".");

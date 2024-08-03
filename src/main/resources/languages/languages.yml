@@ -1,3 +1,6 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${languages_config_version}
+
 languages:
 - fr_FR: fr.yml
 - en_US: en.yml

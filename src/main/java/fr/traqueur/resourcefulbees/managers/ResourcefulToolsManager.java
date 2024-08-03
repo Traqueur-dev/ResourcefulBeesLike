@@ -1,5 +1,6 @@
 package fr.traqueur.resourcefulbees.managers;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import fr.traqueur.resourcefulbees.LangKeys;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
@@ -10,7 +11,7 @@ import fr.traqueur.resourcefulbees.api.constants.Constants;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
-import fr.traqueur.resourcefulbees.api.managers.Saveable;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.managers.ToolsManager;
 import fr.traqueur.resourcefulbees.api.models.Bee;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
@@ -18,7 +19,6 @@ import fr.traqueur.resourcefulbees.listeners.ToolsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBee;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -264,7 +264,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
 
     @Override
     public void loadData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
         this.beeBoxMaxBees = config.getInt(ConfigKeys.BEE_BOX_MAX_BEES);
         this.customDataBox = config.getInt(ConfigKeys.CUSTOM_DATA_BOX);
         this.customDataJar = config.getInt(ConfigKeys.CUSTOM_DATA_JAR);

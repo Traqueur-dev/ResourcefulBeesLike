@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface BeeTypeManager extends Manager {
 
+    BeeType getNaturalType();
+
     void registerBeeType(BeeType BeeType);
 
     void setupRecipes();

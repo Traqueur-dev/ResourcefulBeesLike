@@ -1,3 +1,5 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${breeds_config_version}
 breeds:
   - parents: cobblestone_bee,gravel_bee
     child: sand_bee

@@ -28,4 +28,5 @@ public class ConfigKeys {
     public static final String PATTERN = "pattern";
     public static final String INGREDIENTS = "ingredients";
     public static final String PRODUCE_BLOCKS = "produce_blocks";
+    public static final String NATURAL_SPAWNING = "natural_spawning";
 }

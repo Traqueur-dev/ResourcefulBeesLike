@@ -1,3 +1,5 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${tools_config_version}
 bee-box-max-bees: 10
 custom_data_jar: 100
 custom_data_box: 101
