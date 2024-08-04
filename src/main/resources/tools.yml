@@ -3,3 +3,20 @@ config-version: ${tools_config_version}
 bee-box-max-bees: 10
 custom_data_jar: 100
 custom_data_box: 101
+crafting_enabled: true
+tools-crafts:
+  bee-jar:
+    pattern:
+      - " X "
+      - "X X"
+      - "XXX"
+    ingredients:
+      - X: "GLASS_PANE"
+  bee-box:
+    pattern:
+      - "XXX"
+      - "XBX"
+      - "XXX"
+    ingredients:
+      - X: "OAK_PLANKS"
+      - B: "HONEYCOMB"

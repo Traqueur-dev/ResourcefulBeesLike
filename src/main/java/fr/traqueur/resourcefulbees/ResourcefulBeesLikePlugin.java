@@ -18,9 +18,8 @@ import fr.traqueur.resourcefulbees.api.managers.*;
 import fr.traqueur.resourcefulbees.api.models.BeeTools;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
-import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
-import fr.traqueur.resourcefulbees.api.utils.MessageUtils;
-import fr.traqueur.resourcefulbees.api.utils.Updater;
+import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
+import fr.traqueur.resourcefulbees.api.utils.*;
 import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
 import fr.traqueur.resourcefulbees.commands.BeeSummonCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
@@ -37,6 +36,7 @@ import org.bukkit.plugin.ServicePriority;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 
@@ -44,6 +44,7 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
 
     private ServerImplementation scheduler;
 
+    private ItemUtils itemUtils;
     private MessageUtils messageUtils;
     private CommandManager commandManager;
     private List<Saveable> saveables;
@@ -61,6 +62,16 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         this.langKeys = new HashSet<>();
         this.messageUtils = this.isPaperVersion() ? new PaperUtils() : new SpigotUtils();
         this.scheduler = new FoliaLib(this).getImpl();
+
+        String className = ReflectionUtils.ITEM_UTILS.getVersioned(NmsVersion.getCurrentVersion());
+        try {
+            Class<?> clazz = Class.forName(className);
+            Constructor<?> constructor = clazz.getConstructor();
+            this.itemUtils = (ItemUtils) constructor.newInstance();
+        } catch (Exception exception) {
+            BeeLogger.severe("Cannot create a new instance for the class " + className);
+            BeeLogger.severe(exception.getMessage());
+        }
     }
 
     @Override
@@ -235,5 +246,9 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         } catch (ClassNotFoundException e) {
             return false;
         }
+    }
+
+    public ItemUtils getItemUtils() {
+        return itemUtils;
     }
 }

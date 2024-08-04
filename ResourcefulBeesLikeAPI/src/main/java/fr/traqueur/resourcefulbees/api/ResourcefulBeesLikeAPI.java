@@ -3,9 +3,12 @@ package fr.traqueur.resourcefulbees.api;
 import com.tcoded.folialib.impl.ServerImplementation;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
 import fr.traqueur.resourcefulbees.api.lang.LangKey;
+import fr.traqueur.resourcefulbees.api.utils.ItemUtils;
 import org.bukkit.entity.Player;
 
 public interface ResourcefulBeesLikeAPI {
+
+    ItemUtils getItemUtils();
 
     ServerImplementation getScheduler();
 

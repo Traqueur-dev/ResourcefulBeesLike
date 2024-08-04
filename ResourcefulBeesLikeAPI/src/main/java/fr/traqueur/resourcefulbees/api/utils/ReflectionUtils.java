@@ -5,7 +5,8 @@ import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 public enum ReflectionUtils {
 
     ENTITY("fr.traqueur.resourcefulbees.nms.%s.entity", "ResourcefulBeeEntity"),
-    MOVE_TASK("fr.traqueur.resourcefulbees.nms.%s.entity.tasks", "MoveTask")
+    MOVE_TASK("fr.traqueur.resourcefulbees.nms.%s.entity.tasks", "MoveTask"),
+    ITEM_UTILS("fr.traqueur.resourcefulbees.nms.%s.items", "ItemUtils"),
     ;
 
     private final String packageName;
