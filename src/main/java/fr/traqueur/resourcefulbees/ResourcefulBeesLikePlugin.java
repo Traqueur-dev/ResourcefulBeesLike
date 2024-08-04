@@ -10,7 +10,6 @@ import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import fr.traqueur.commands.api.CommandManager;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLike;
-import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.lang.Formatter;
@@ -26,18 +25,15 @@ import fr.traqueur.resourcefulbees.commands.BeeGiveCommand;
 import fr.traqueur.resourcefulbees.commands.BeeSummonCommand;
 import fr.traqueur.resourcefulbees.commands.ResourcefulBeesHandler;
 import fr.traqueur.resourcefulbees.commands.arguments.BeeTypeArgument;
-import fr.traqueur.resourcefulbees.commands.arguments.BooleanArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.ToolsArgument;
 import fr.traqueur.resourcefulbees.commands.arguments.UpgradeArgument;
 import fr.traqueur.resourcefulbees.managers.*;
 import fr.traqueur.resourcefulbees.platform.paper.PaperUtils;
 import fr.traqueur.resourcefulbees.platform.spigot.SpigotUtils;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,8 +74,6 @@ public final class ResourcefulBeesLikePlugin extends ResourcefulBeesLike {
         for (LangKeys value : LangKeys.values()) {
             this.registerLanguageKey(value);
         }
-
-        this.commandManager.registerConverter(Boolean.class, "boolean", new BooleanArgument());
 
         this.registerManager(new ResourcefulBeeTypeManager(this), BeeTypeManager.class);
         this.commandManager.registerConverter(BeeType.class, "beetype", new BeeTypeArgument(this.getManager(BeeTypeManager.class)));

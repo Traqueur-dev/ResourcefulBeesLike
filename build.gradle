@@ -89,7 +89,7 @@ dependencies {
     implementation "com.tcoded:FoliaLib:0.3.4"
     implementation 'org.bstats:bstats-bukkit:3.0.0'
     implementation "dev.dejvokep:boosted-yaml:1.3.6"
-    implementation "com.github.Traqueur-dev:CommandsAPI:1.4.1"
+    implementation "com.github.Traqueur-dev:CommandsAPI:1.4.2"
     //implementation "fr.traqueur:CommandsAPI:1.4.0"
 }
 
