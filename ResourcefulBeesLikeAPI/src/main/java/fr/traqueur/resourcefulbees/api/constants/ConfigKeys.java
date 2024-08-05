@@ -28,4 +28,8 @@ public class ConfigKeys {
     public static final String PATTERN = "pattern";
     public static final String INGREDIENTS = "ingredients";
     public static final String PRODUCE_BLOCKS = "produce_blocks";
+    public static final String NATURAL_SPAWNING = "natural_spawning";
+    public static final String TOOLS_CRAFTS = "tools-crafts";
+    public static final String BEE_BOX = "bee-box";
+    public static final String BEE_JAR = "bee-jar";
 }

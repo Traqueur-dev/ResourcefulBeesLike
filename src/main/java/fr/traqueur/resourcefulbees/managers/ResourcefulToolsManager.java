@@ -1,5 +1,7 @@
 package fr.traqueur.resourcefulbees.managers;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import fr.traqueur.resourcefulbees.LangKeys;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
@@ -10,17 +12,17 @@ import fr.traqueur.resourcefulbees.api.constants.Constants;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.events.BeeSpawnEvent;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
-import fr.traqueur.resourcefulbees.api.managers.Saveable;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.managers.ToolsManager;
 import fr.traqueur.resourcefulbees.api.models.Bee;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
+import fr.traqueur.resourcefulbees.api.nms.NmsVersion;
 import fr.traqueur.resourcefulbees.listeners.ToolsListener;
 import fr.traqueur.resourcefulbees.models.ResourcefulBee;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,6 +30,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ResourcefulToolsManager implements ToolsManager, Saveable {
@@ -41,7 +44,6 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
     public ResourcefulToolsManager(ResourcefulBeesLikePlugin plugin) {
         this.plugin = plugin;
         this.beeTypeManager = plugin.getManager(BeeTypeManager.class);
-
         plugin.getServer().getPluginManager().registerEvents(new ToolsListener(this), plugin);
     }
 
@@ -78,6 +80,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
         meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.BEE_BOX_NAME)));
         item.setItemMeta(meta);
         this.updateBeeBox(item);
+        this.plugin.getItemUtils().setUnstackable(item);
         return item;
     }
 
@@ -88,7 +91,7 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
         meta.setDisplayName(this.plugin.reset(this.plugin.translate(LangKeys.BEE_JAR_NAME)));
         item.setItemMeta(meta);
         this.updateBeeJar(item);
-        return item;
+        return this.plugin.getItemUtils().setUnstackable(item);
     }
 
     public boolean isBeeJarFull(ItemStack beeJar) {
@@ -252,6 +255,34 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
         beeBox.setItemMeta(meta);
     }
 
+    private void setupRecipes() {
+        YamlDocument config = this.getConfig(this.plugin);
+        Section toolsCrafts = config.getSection(ConfigKeys.TOOLS_CRAFTS);
+        for (String key : List.of(ConfigKeys.BEE_JAR, ConfigKeys.BEE_BOX)) {
+            Section craft = toolsCrafts.getSection(key);
+            ItemStack result = key.equals(ConfigKeys.BEE_BOX) ? this.generateBeeBox() : this.generateBeeJar();
+
+            String[] pattern = craft.getList(ConfigKeys.PATTERN).toArray(new String[0]);
+            List<Map<?,?>> ingredients = craft.getMapList(ConfigKeys.INGREDIENTS);
+
+            NamespacedKey craftKey = new NamespacedKey(this.plugin, key);
+            ShapedRecipe recipe = new ShapedRecipe(craftKey, result);
+            recipe.shape(pattern);
+
+            ingredients.forEach(map -> {
+                String keyIngredient = (String) map.keySet().toArray()[0];
+                String ingredient = (String) map.get(keyIngredient);
+
+                Material material = Material.getMaterial(ingredient);
+                if (material == null) {
+                    throw new IllegalArgumentException("Material " + ingredient + " is not valid.");
+                }
+                recipe.setIngredient(keyIngredient.charAt(0), material);
+            });
+            this.plugin.getServer().addRecipe(recipe);
+        }
+    }
+
     @Override
     public ResourcefulBeesLikeAPI getPlugin() {
         return plugin;
@@ -264,10 +295,14 @@ public class ResourcefulToolsManager implements ToolsManager, Saveable {
 
     @Override
     public void loadData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
         this.beeBoxMaxBees = config.getInt(ConfigKeys.BEE_BOX_MAX_BEES);
         this.customDataBox = config.getInt(ConfigKeys.CUSTOM_DATA_BOX);
         this.customDataJar = config.getInt(ConfigKeys.CUSTOM_DATA_JAR);
+        boolean craftingEnable = config.getBoolean(ConfigKeys.CRAFTING_ENABLED);
+        if (craftingEnable) {
+            this.getPlugin().getScheduler().runLater(this::setupRecipes, 2L);
+        }
     }
 
     @Override

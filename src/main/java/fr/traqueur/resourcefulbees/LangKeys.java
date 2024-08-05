@@ -4,6 +4,7 @@ import fr.traqueur.resourcefulbees.api.lang.LangKey;
 
 public enum LangKeys implements LangKey {
 
+    BEE_SUMMON("bee_summon"),
     BEE_GIVE("bee_give"),
     BEE_GIVE_BEEHIVE("bee_give_beehive"),
     BEE_BOX_GIVE("bee_box_give"),

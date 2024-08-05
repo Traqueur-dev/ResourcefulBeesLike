@@ -1,25 +1,25 @@
 package fr.traqueur.resourcefulbees.managers;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import fr.traqueur.resourcefulbees.ResourcefulBeesLikePlugin;
 import fr.traqueur.resourcefulbees.api.ResourcefulBeesLikeAPI;
 import fr.traqueur.resourcefulbees.api.adapters.persistents.BeeTypePersistentDataType;
 import fr.traqueur.resourcefulbees.api.constants.ConfigKeys;
 import fr.traqueur.resourcefulbees.api.constants.Keys;
 import fr.traqueur.resourcefulbees.api.managers.BeeTypeManager;
-import fr.traqueur.resourcefulbees.api.managers.Saveable;
+import fr.traqueur.resourcefulbees.api.datas.Saveable;
 import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.utils.BeeLogger;
 import fr.traqueur.resourcefulbees.models.ResourcefulBeeType;
+import fr.traqueur.resourcefulbees.utils.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Bee;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +29,12 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
 
     private final ResourcefulBeesLikePlugin plugin;
     private final Map<String, BeeType> beeTypes;
+    private final Map<BeeType, Double> naturalSpawnRates;
 
     public ResourcefulBeeTypeManager(ResourcefulBeesLikePlugin plugin) {
         this.plugin = plugin;
         this.beeTypes = new HashMap<>();
+        this.naturalSpawnRates = new HashMap<>();
     }
 
     public BeeType getBeeTypeById(int id) {
@@ -53,6 +55,24 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
         recipeReverse.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.HONEYCOMB_BLOCK)));
         this.plugin.getServer().addRecipe(recipeReverse);
 
+    }
+
+    @Override
+    public BeeType getNaturalType() {
+        if(this.naturalSpawnRates.isEmpty()) {
+            return this.getBeeType("normal_bee");
+        }
+
+        double sum = this.naturalSpawnRates.values().stream().mapToDouble(Double::doubleValue).sum();
+        double chance = Math.random() * sum;
+        int acumm = 0;
+        for(Map.Entry<BeeType, Double> entry : this.naturalSpawnRates.entrySet()) {
+            acumm += entry.getValue();
+            if(chance <= acumm) {
+                return entry.getKey();
+            }
+        }
+        return this.naturalSpawnRates.keySet().toArray(new BeeType[0])[0];
     }
 
     public void registerBeeType(BeeType beeType) {
@@ -93,7 +113,7 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
 
     @Override
     public void loadData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         config.getMapList(ConfigKeys.BEETYPE).forEach(map -> {
             int id  = (int) map.get(ConfigKeys.ID);
@@ -107,12 +127,23 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
             this.registerBeeType(new ResourcefulBeeType(0,"normal_bee", Material.POPPY, Material.POPPY));
         }
 
+        config.getMapList(ConfigKeys.NATURAL_SPAWNING).forEach(map -> {
+            String type = (String) map.keySet().toArray()[0];
+            double rate = NumberUtils.castDouble(map.get(type));
+            BeeType beeType = this.getBeeType(type);
+            if(beeType == null) {
+                throw new IllegalArgumentException("Bee type " + type + " does not exist for natural spawning");
+            } else {
+                this.naturalSpawnRates.put(beeType, rate);
+            }
+        });
+
         BeeLogger.info("&aLoaded " + this.beeTypes.size() + " bee types.");
     }
 
     @Override
     public void saveData() {
-        FileConfiguration config = this.getConfig(this.plugin);
+        YamlDocument config = this.getConfig(this.plugin);
 
         List<Map<String, Object>> beetypes = this.beeTypes.values()
                 .stream()
@@ -127,7 +158,7 @@ public class ResourcefulBeeTypeManager implements BeeTypeManager, Saveable {
 
         config.set(ConfigKeys.BEETYPE, beetypes);
         try {
-            config.save(new File(this.plugin.getDataFolder(), this.getFile()));
+            config.save();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

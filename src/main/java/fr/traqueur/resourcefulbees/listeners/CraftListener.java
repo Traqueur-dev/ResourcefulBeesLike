@@ -130,6 +130,11 @@ public class CraftListener implements Listener {
         if (Arrays.stream(matrix).filter(Objects::nonNull).count() != 1) {
             return;
         }
+
+        if (Arrays.stream(matrix).filter(Objects::nonNull).noneMatch(item -> item.getType() == Material.HONEYCOMB_BLOCK)) {
+            return;
+        }
+
         int customModelData = Arrays.stream(matrix)
                 .filter(item -> item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData())
                 .mapToInt(item -> item.getItemMeta().getCustomModelData())

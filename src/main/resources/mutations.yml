@@ -1,3 +1,5 @@
+#DON'T CHANGE THE CONFIG-VERSION
+config-version: ${mutations_config_version}
 mutations:
   - parent: cobblestone_bee
     child: andesite_bee
