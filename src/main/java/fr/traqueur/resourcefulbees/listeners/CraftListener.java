@@ -8,11 +8,14 @@ import fr.traqueur.resourcefulbees.api.models.BeeType;
 import fr.traqueur.resourcefulbees.api.models.BeehiveCraft;
 import fr.traqueur.resourcefulbees.api.models.BeehiveUpgrade;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -93,6 +96,11 @@ public class CraftListener implements Listener {
         if (recipe == null) {
             return;
         }
+
+        if(!this.getKey(recipe).contains("honeycomb_production")) {
+            return;
+        }
+
         ItemStack itemStack = recipe.getResult();
         if (itemStack.getType() != Material.HONEYCOMB) {
             return;
@@ -120,6 +128,12 @@ public class CraftListener implements Listener {
         if (recipe == null) {
             return;
         }
+
+
+        if(!this.getKey(recipe).contains("honeycomb_reverse")) {
+            return;
+        }
+
         ItemStack itemStack = recipe.getResult();
         if (itemStack.getType() != Material.HONEYCOMB) {
             return;
@@ -130,6 +144,11 @@ public class CraftListener implements Listener {
         if (Arrays.stream(matrix).filter(Objects::nonNull).count() != 1) {
             return;
         }
+
+        if (Arrays.stream(matrix).filter(Objects::nonNull).noneMatch(item -> item.getType() == Material.HONEYCOMB_BLOCK)) {
+            return;
+        }
+
         int customModelData = Arrays.stream(matrix)
                 .filter(item -> item != null && item.hasItemMeta() && item.getItemMeta().hasCustomModelData())
                 .mapToInt(item -> item.getItemMeta().getCustomModelData())
@@ -151,6 +170,11 @@ public class CraftListener implements Listener {
         if (recipe == null) {
             return;
         }
+
+        if(!this.getKey(recipe).contains("beehive_upgrade_")) {
+            return;
+        }
+
         ItemStack itemStack = recipe.getResult();
         if (itemStack.getType() != Material.BEEHIVE) {
             return;
@@ -231,5 +255,15 @@ public class CraftListener implements Listener {
         //compare matrix with ingredients
         List<Material> matrixList = Arrays.stream(matrix).filter(Objects::nonNull).map(ItemStack::getType).toList();
         return new HashSet<>(matrixList).containsAll(ingredients);
+    }
+
+    private String getKey(Recipe recipe) {
+        if (recipe instanceof ShapedRecipe) {
+            return ((ShapedRecipe) recipe).getKey().getKey();
+        }
+        if(recipe instanceof ShapelessRecipe) {
+            return ((ShapelessRecipe) recipe).getKey().getKey();
+        }
+        throw new IllegalArgumentException("Recipe type not supported.");
     }
 }
