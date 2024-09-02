@@ -36,6 +36,14 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
     - name: Grant Permissions
       run: chmod +x gradlew
+
+    - name: Compile Minecraft Spigot (via BuildTools)
+      uses: SpraxDev/Action-SpigotMC@v5.1.0
+      with:
+        versions: 1.21.1, 1.20.6, 1.20.4
+        remapped: true
+            
+      
     - name: Build with Gradle Wrapper
       run: ./gradlew build
 
